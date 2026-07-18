@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Galeri 3D Interaktif</title>
+    <!-- Import A-Frame -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <!-- Import Komponen Kustom Kita (dengan cache buster) -->
+    <script src="./js/components.js?v=1.0.2"></script>
+    <!-- Import CSS (dengan cache buster) -->
+    <link rel="stylesheet" href="./css/style.css?v=1.0.2">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-container">
+            <div class="spinner"></div>
+            <h2 class="loading-title">Memuat Galeri...</h2>
+            <p class="loading-text">Menyiapkan aset 3D & media berkualitas tinggi</p>
+        </div>
+    </div>
+
+    <!-- Overlay Petunjuk Pointer Lock -->
+    <div id="pointer-lock-instructions">
+        <div class="instructions-card">
+            <div class="icon-container">
+                <svg class="mouse-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="7" />
+                    <path class="mouse-scroll" d="M12 6v4" />
+                </svg>
+            </div>
+            <h2>Galeri 3D Interaktif</h2>
+            <p>Klik layar atau tombol di bawah untuk masuk ke mode navigasi kamera.</p>
+
+            <div class="controls-guide">
+                <div class="control-item">
+                    <span class="key">Geser Mouse</span>
+                    <span class="desc">Arahkan Kamera (Bebas tanpa klik)</span>
+                </div>
+                <div class="control-item">
+                    <span class="key">W, A, S, D</span>
+                    <span class="desc">Jalan (Maju, Kiri, Mundur, Kanan)</span>
+                </div>
+                <div class="control-item">
+                    <span class="key">Spasi</span>
+                    <span class="desc">Melompat</span>
+                </div>
+                <span class="hint">*Tekan <strong>ESC</strong> untuk menampilkan kursor kembali.</span>
+            </div>
+
+            <button class="start-btn">Mulai Menjelajah</button>
+        </div>
+    </div>
+
+    <!-- Overlay Detail Pertandingan (Popup HUD) -->
+    <div id="match-details-popup" class="hidden">
+        <div class="popup-card">
+            <button class="close-btn">&times;</button>
+            <div class="popup-content">
+                <div class="popup-media">
+                    <img id="match-img" src="" alt="Match Highlight">
+                </div>
+                <div class="popup-info">
+                    <h2 id="match-title">MOMEN JUARA</h2>
+                    <div id="match-meta" class="match-meta-grid">
+                        <div class="meta-item">
+                            <span class="meta-label">Tanggal</span>
+                            <span id="match-date" class="meta-value">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Lawan</span>
+                            <span id="match-opponent" class="meta-value">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Skor</span>
+                            <span id="match-score" class="meta-value">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Stadion</span>
+                            <span id="match-venue" class="meta-value">-</span>
+                        </div>
+                    </div>
+                    <div class="match-desc-container">
+                        <p id="match-desc">Deskripsi pertandingan akan muncul di sini...</p>
+                    </div>
+                </div>
+            </div>
+            <span class="close-hint">*Tekan <strong>ESC</strong> atau tombol silang untuk menutup.</span>
+        </div>
+    </div>
+
+    <!-- Overlay Detail Piala (Popup HUD dengan Canvas 3D) -->
+    <div id="trophy-details-popup" class="hidden">
+        <div class="popup-card">
+            <button class="close-btn">&times;</button>
+            <div class="popup-content">
+                <div class="popup-media"
+                    style="min-height: 280px; background: rgba(10, 12, 20, 0.4); border-radius: 16px;">
+                    <div id="trophy-canvas-container" style="width: 100%; height: 280px; position: relative;"></div>
+                </div>
+                <div class="popup-info" style="justify-content: flex-start; gap: 10px;">
+                    <h2 id="trophy-popup-title"
+                        style="margin-top: 0; background: linear-gradient(135deg, #ffffff 0%, #d4af37 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        NAMA PIALA</h2>
+                    <div class="match-desc-container" style="height: 180px; overflow-y: auto;">
+                        <p id="trophy-popup-desc" style="line-height: 1.6; color: #d1d5db; font-size: 14px; margin: 0;">
+                            Deskripsi piala...</p>
+                    </div>
+                </div>
+            </div>
+            <span class="close-hint">*Tekan <strong>ESC</strong> atau tombol silang untuk menutup.</span>
+        </div>
+    </div>
+
+    <!-- Real-time FPS Counter Overlay -->
+    <div id="fps-counter">
+        <span class="fps-dot"></span>
+        <span class="fps-label">FPS:</span>
+        <span id="fps-value">--</span>
+    </div>
+
+    <a-scene loading-manager pointer-lock-overlay fps-counter-system ball-shooter renderer="antialias: false; colorManagement: true;" shadow="enabled: false">
+        <!-- Asset Management System (Semua file diload di sini sebelum scene dirender) -->
+        <a-assets>
+            <!-- Audio Anthem Liverpool "You'll Never Walk Alone" -->
+            <audio id="anthem" src="./assets/audio/youll never walk alone.mp3" preload="auto" loop="true"></audio>
+            <!-- Video Miracle of Anfield & Istanbul -->
+            <video id="video-anfield" src="./assets/video/miracle of anfield.mp4" preload="auto" loop="true" muted playsinline></video>
+            <video id="video-istanbul" src="./assets/video/miracle of instanbul.mp4" preload="auto" loop="true" muted playsinline></video>
+            <!-- Tekstur Jersey Locker Room -->
+            <img id="jersey-home-tex" src="./assets/img/liverpool_home_jersey.png">
+            <img id="jersey-gk-tex" src="./assets/img/liverpool_gk_jersey.png">
+            <!-- Tekstur Tembok Bata Merah Liverpool -->
+            <img id="wall-texture" src="./assets/images/wall-texture.svg">
+            <!-- Gambar The Champions Wall -->
+            <img id="champions-wall" src="./assets/images/The champions wall.jpg">
+            <!-- Gambar Poster Tembok Pintu Kanan -->
+            <img id="poster-pintu-kanan" src="./assets/images/poster tembok pintu kanan.jpg">
+            <!-- Poster Tambahan Sekat Pintu Sisi Luar -->
+            <img id="poster-pintu-kanan-belakang" src="./assets/images/anfieldpintukananbelakang.jpg">
+            <img id="poster-pintu-kiri-belakang" src="./assets/images/postertembokpintukiribelakang.jpg">
+            <!-- 10 Poster Sejarah Liverpool Kustom -->
+            <img id="poster-1" src="./assets/images/poster1.jpg">
+            <img id="poster-2" src="./assets/images/poster2.jpg">
+            <img id="poster-3" src="./assets/images/poster3.jpg">
+            <img id="poster-4" src="./assets/images/poster4.jpg">
+            <img id="poster-5" src="./assets/images/poster5.jpg">
+            <img id="poster-6" src="./assets/images/poster6.jpg">
+            <img id="poster-7" src="./assets/images/poster7.jpg">
+            <img id="poster-8" src="./assets/images/poster8.jpg">
+            <img id="poster-9" src="./assets/images/poster9.jpg">
+            <img id="poster-10" src="./assets/images/poster10.jpg">
+            <img id="poster-11" src="./assets/images/poster11.jpg">
+            <img id="poster-12" src="./assets/images/poster12.jpg">
+            <img id="poster-13" src="./assets/images/poster13.jpg">
+            <img id="poster-14" src="./assets/images/poster14.jpg">
+            <img id="poster-15" src="./assets/images/poster15.jpg">
+            <img id="poster-16" src="./assets/images/poster16.jpg">
+            <img id="poster-17" src="./assets/images/poster17.jpg">
+            <img id="poster-18" src="./assets/images/poster18.jpg">
+            <img id="poster-19" src="./assets/images/poster 19.jpg">
+            <img id="poster-20" src="./assets/images/poster20.jpg">
+            <img id="poster-21" src="./assets/images/poster21.jpg">
+            <img id="poster-22" src="./assets/images/poster22.jpg">
+            <img id="poster-23" src="./assets/images/poster23.jpg">
+            <img id="poster-24" src="./assets/images/poster24.jpg">
+            <img id="poster-25" src="./assets/images/poster25.jpg">
+            <img id="poster-26" src="./assets/images/poster26.jpg">
+            <!-- Teks Pameran SVG (Offline & CORS-free) -->
+            <img id="txt-main-title" src="./assets/images/label_main_title.svg">
+            <img id="txt-istanbul" src="./assets/images/label_istanbul.svg">
+            <img id="txt-madrid" src="./assets/images/label_madrid.svg">
+            <img id="txt-pl2020" src="./assets/images/label_pl2020.svg">
+            <img id="txt-pl2025" src="./assets/images/label_pl2025.svg">
+            <img id="txt-premier-league" src="./assets/images/label_premier_league.svg">
+            <img id="txt-champions-league" src="./assets/images/label_champions_league.svg">
+            <img id="txt-fa-cup" src="./assets/images/label_fa_cup.svg">
+            <img id="txt-carabao-cup" src="./assets/images/label_carabao_cup.svg">
+            <img id="txt-europa-league" src="./assets/images/label_europa_league.svg">
+            <img id="txt-super-cup" src="./assets/images/label_super_cup.svg">
+            <img id="txt-club-world-cup" src="./assets/images/label_club_world_cup.svg">
+            <!-- Tekstur Tiang Podium Piala -->
+            <img id="podium-texture" src="./assets/images/podium_texture.svg">
+            <!-- Model 3D Papan Anfield Ikonik milik User -->
+            <a-asset-item id="anfield-sign-model"
+                src="./assets/models/liverpoolbadge/source/18x24 STD anfield.glb"></a-asset-item>
+
+            <!-- Aset Model 3D Piala -->
+            <a-asset-item id="trophy-premier-league"
+                src="./assets/models/premier league/source/EPL Trophy Low-Poly.glb"></a-asset-item>
+            <a-asset-item id="trophy-champions-league" src="./assets/models/league_champions.glb"></a-asset-item>
+            <a-asset-item id="trophy-fa-cup" src="./assets/models/fa cup/source/Nations League.glb"></a-asset-item>
+            <a-asset-item id="trophy-league-cup" src="./assets/models/carabao cup.glb"></a-asset-item>
+            <a-asset-item id="trophy-europa-league" src="./assets/models/uefa cup.obj"></a-asset-item>
+            <a-asset-item id="trophy-super-cup" src="./assets/models/super cup/source/Copa america.glb"></a-asset-item>
+            <a-asset-item id="trophy-club-world-cup" src="./assets/models/fifa_club_world_cup.glb"></a-asset-item>
+
+            <!-- Aset Gambar untuk Dinding Depan -->
+            <img id="lfc-logo" src="./assets/images/logoliverpool1.png">
+            <img id="champ-1" src="./assets/images/istanbul2005.jpg">
+            <img id="champ-2" src="./assets/images/ligachampion.jpg">
+            <img id="champ-3" src="./assets/images/ligainggri2020.jpg">
+            <img id="champ-4" src="./assets/images/ligainggris2025.jpg">
+        </a-assets>
+
+        <!-- Kamera Player dengan fitur WASD, Look, Jump, dan Gravitasi Lorong -->
+        <!-- Kamera Player dengan kecepatan jalan yang sudah disesuaikan -->
+        <!-- Kamera Player yang sudah dilengkapi tabrakan dinding (wall-collision) -->
+        <!-- Kamera Player yang sudah dilengkapi tabrakan dinding -->
+        <a-camera position="0 1.6 0.5" rotation="-15 0 0" look-controls="pointerLockEnabled: true"
+            wasd-controls="acceleration: 12" jump-ability tunnel-gravity wall-collision near="0.1">
+
+            <!-- Titik Tengah (Reticle) berupa titik bulat merah statis (Gaze/Fuse tetap bekerja di latar belakang) -->
+            <a-cursor fuse="true" fuse-timeout="2000" raycaster="objects: .clickable, .raycast-obstacle" raycast-occlusion-filter
+                color="#c8102e"
+                geometry="primitive: circle; radius: 0.006"
+                material="shader: flat; opacity: 0.8">
+            </a-cursor>
+
+        </a-camera>
+        <!-- ====== LORONG STADION ANFIELD ====== -->
+
+        <!-- Dinding Kiri - Dipertinggi menjadi 8 agar menutup rapat -->
+        <a-plane class="raycast-obstacle" position="-1.1 -0.5 -4" rotation="0 90 0" width="12" height="8" src="#wall-texture" repeat="12 8"
+            roughness="0.6" shadow="receive: true" material="side: double"></a-plane>
+
+        <!-- Dinding Kanan - Dipertinggi menjadi 8 agar menutup rapat -->
+        <a-plane class="raycast-obstacle" position="1.1 -0.5 -4" rotation="0 -90 0" width="12" height="8" src="#wall-texture" repeat="12 8"
+            roughness="0.6" shadow="receive: true" material="side: double"></a-plane>
+
+        <!-- Dinding Belakang (di area spawn) - Ditinggikan -->
+        <a-plane class="raycast-obstacle" position="0 2.5 2" rotation="0 180 0" width="2.2" height="7" src="#wall-texture" repeat="2.2 7"
+            roughness="0.6" shadow="receive: true"></a-plane>
+
+        <!-- Langit-Langit Terowongan (Berwarna gelap/hitam) -->
+        <!-- Penambahan material="side: double" agar atap tidak tembus pandang dari bawah -->
+
+        <!-- Langit-langit Landing Atas (Horizontal) -->
+        <a-plane position="0 2.2 0.5" rotation="90 0 0" width="2.2" height="3" color="#ffffff" material="side: double"
+            shadow="receive: true"></a-plane>
+
+        <!-- Langit-langit Tangga (Horizontal) -->
+        <!-- Langit-Langit Terowongan (Dibuat datar sepenuhnya dari ujung ke ujung) -->
+        <a-plane position="0 2.2 -4.5" rotation="90 0 0" width="2.2" height="11" color="#ffffff" material="side: double"
+            shadow="receive: true"></a-plane>
+
+
+
+        <!-- Lantai Landing Atas (Spawn Area) -->
+        <a-plane position="0 0 1" rotation="-90 0 0" width="2.2" height="4" color="#888888
+" roughness="0.9" shadow="receive: true"></a-plane>
+
+        <!-- Tangga Anfield (Prosedural menggunakan komponen custom) -->
+        <a-entity anfield-stairs="color: #888888"></a-entity>
+
+        <!-- Pegangan Tangga Pipa Logam Merah (Handrails) -->
+        <!-- Sisi Kiri (Tebal, Pipa Logam) -->
+        <!-- Bagian Miring Kiri -->
+        <a-cylinder position="-1.0 -0.72 -3.7" rotation="59 0 0" radius="0.04" height="6.3" color="#c8102e"
+            metalness="0.6" roughness="0.2" shadow="cast: true"></a-cylinder>
+        <!-- Bagian Landing Atas Kiri -->
+        <a-cylinder position="-1.0 0.895 0.5" rotation="90 0 0" radius="0.04" height="3.05" color="#c8102e"
+            metalness="0.6" roughness="0.2" shadow="cast: true"></a-cylinder>
+        <!-- Bagian Landing Bawah Kiri -->
+        <a-cylinder position="-1.0 -2.34 -8.2" rotation="90 0 0" radius="0.04" height="3.5" color="#c8102e"
+            metalness="0.6" roughness="0.2" shadow="cast: true"></a-cylinder>
+
+        <!-- Sisi Kanan (Tebal, Pipa Logam) -->
+        <!-- Bagian Miring Kanan -->
+        <a-cylinder position="1.0 -0.72 -3.7" rotation="59 0 0" radius="0.04" height="6.3" color="#c8102e"
+            metalness="0.6" roughness="0.2" shadow="cast: true"></a-cylinder>
+        <!-- Bagian Landing Atas Kanan -->
+        <a-cylinder position="1.0 0.895 0.5" rotation="90 0 0" radius="0.04" height="3.05" color="#c8102e"
+            metalness="0.6" roughness="0.2" shadow="cast: true"></a-cylinder>
+        <!-- Bagian Landing Bawah Kanan -->
+        <a-cylinder position="1.0 -2.34 -8.2" rotation="90 0 0" radius="0.04" height="3.5" color="#c8102e"
+            metalness="0.6" roughness="0.2" shadow="cast: true"></a-cylinder>
+
+        <!-- Lantai Landing Bawah (Merah Anfield) -->
+        <a-plane position="0 -3.24 -8.2" rotation="-90 0 0" width="2.2" height="3.6" color="#c8102e" roughness="0.8"
+            shadow="receive: true"></a-plane>
+
+        <!-- Dinding Ujung & Pintu Keluar Merah -->
+        <!-- Dinding Ujung Kiri (Samping Pintu) -->
+        <a-plane class="raycast-obstacle" position="-0.85 -2.24 -10" rotation="0 0 0" width="0.5" height="2" src="#wall-texture" repeat="0.5 2"
+            roughness="0.6" shadow="receive: true" material="side: double"></a-plane>
+
+        <!-- Dinding Ujung Kanan (Samping Pintu) -->
+        <a-plane class="raycast-obstacle" position="0.85 -2.24 -10" rotation="0 0 0" width="0.5" height="2" src="#wall-texture" repeat="0.5 2"
+            roughness="0.6" shadow="receive: true" material="side: double"></a-plane>
+
+        <!-- Dinding Ujung Atas (Atas Pintu sampai Plafon) -->
+        <a-plane class="raycast-obstacle" position="0 0.48 -10" rotation="0 0 0" width="2.2" height="3.44" src="#wall-texture" repeat="2.2 3.44"
+            roughness="0.6" shadow="receive: true" material="side: double"></a-plane>
+
+        <!-- Pintu Merah Otomatis (Dibungkus dengan Engsel) -->
+        <a-entity id="door-hinge" position="-0.6 -2.24 -9.95" auto-door>
+            <!-- Fisik pintu digeser 0.6 ke kanan agar poros rotasinya tepat berada di tepi kiri -->
+            <a-box class="raycast-obstacle" position="0.6 0 0" width="1.2" height="2" depth="0.05" color="#c8102e"
+                shadow="cast: true; receive: true"></a-box>
+        </a-entity>
+
+        <!-- Papan Tanda Ikonik "THIS IS ANFIELD" (Model 3D GLB milik User) -->
+        <!-- Diletakkan tepat di atas pintu merah (y = -0.7, z = -9.8, rotasi Y=180 agar menghadap pemain) -->
+        <a-gltf-model id="anfield-sign" src="#anfield-sign-model" position="0 -0.7 -9.98" rotation="0 180 0"
+            scale="1 1 1"></a-gltf-model>
+
+        <!-- Sistem Pencahayaan Stadion yang Terang (Overhead Lights) -->
+        <a-light type="ambient" color="#555555"></a-light>
+
+        <!-- Lampu 1 (Depan Area Spawn) -->
+        <a-light type="point" position="0 2.0 0.5" intensity="0.5" distance="6" decay="1" color="#ffffff"></a-light>
+        <a-box position="0 2.18 0.5" width="0.8" height="0.04" depth="0.15" color="#eeeeee"
+            material="emissive: #ffffff; emissiveIntensity: 1"></a-box>
+
+        <!-- Lampu 2 (Di Tengah Lorong) - Ditarik ke atas dan diratakan -->
+        <a-light type="point" position="0 2.0 -3.7" intensity="0.6" distance="8" decay="1" color="#ffffff"></a-light>
+        <a-box position="0 2.18 -3.7" width="0.8" height="0.04" depth="0.15" color="#eeeeee"
+            material="emissive: #ffffff; emissiveIntensity: 1"></a-box>
+
+        <!-- Lampu 3 (Di Ujung Lorong Dekat Pintu) - Ditarik ke atas -->
+        <a-light type="point" position="0 2.0 -8.5" intensity="0.8" distance="8" decay="1" color="#ffffff"></a-light>
+        <a-box position="0 2.18 -8.5" width="0.8" height="0.04" depth="0.15" color="#eeeeee"
+            material="emissive: #ffffff; emissiveIntensity: 1"></a-box>
+
+        <!-- ====== RUANGAN UTAMA (THE TROPHY ROOM) ====== -->
+
+        <!-- Lantai Marmer Hitam Mengkilap -->
+        <!-- Posisi Y disamakan dengan lantai bawah lorong (-3.24). Posisi Z ditarik ke -20 agar ruangannya panjang ke depan -->
+        <a-plane position="0 -3.24 -20" rotation="-90 0 0" width="20" height="20" color="#0d0e12" roughness="0.1"
+            metalness="0.6" shadow="receive: true"></a-plane>
+
+        <!-- Dinding Kiri Ruangan -->
+        <a-plane class="raycast-obstacle" position="-10 0.76 -20" rotation="0 90 0" width="20" height="8" src="#wall-texture" repeat="20 8"
+            roughness="0.6" shadow="receive: true"></a-plane>
+
+        <!-- Dinding Kanan Ruangan -->
+        <a-plane class="raycast-obstacle" position="10 0.76 -20" rotation="0 -90 0" width="20" height="8" src="#wall-texture" repeat="20 8"
+            roughness="0.6" shadow="receive: true"></a-plane>
+
+        <!-- ====== POSTER SEJARAH DI TEMBOK UTAMA KIRI & KANAN ====== -->
+        <!-- Posisi Z tepat di tengah celah sekat (Z = -18) -->
+        
+        <!-- Kluster Poster Dinding Kiri (X = -9.9) -->
+        <a-entity id="left-wall-posters" position="-9.9 -1.2 -18" rotation="0 90 0">
+            <!-- Poster 1: Kiri Atas (Top-Left) -->
+            <a-entity position="-1.4 2.0 0">
+                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
+                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.0" height="1.5" src="#poster-1" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 2: Kanan Atas (Top-Right) -->
+            <a-entity position="1.4 2.0 0">
+                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
+                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.0" height="1.5" src="#poster-2" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 3: Tengah (Center) -->
+            <a-entity position="0 0.76 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-3" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 4: Kiri Bawah (Bottom-Left) -->
+            <a-entity position="-1.4 -0.48 0">
+                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
+                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.0" height="1.5" src="#poster-4" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 5: Kanan Bawah (Bottom-Right) -->
+            <a-entity position="1.4 -0.48 0">
+                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
+                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.0" height="1.5" src="#poster-5" position="0 0 0.01"></a-plane>
+            </a-entity>
+        </a-entity>
+
+        <!-- Kluster Poster Dinding Kanan (X = 9.9) -->
+        <a-entity id="right-wall-posters" position="9.9 -1.2 -18" rotation="0 -90 0">
+            <!-- Poster 6: Kiri Atas (Top-Left dari perspektif dinding kanan) -->
+            <a-entity position="-1.4 2.0 0">
+                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
+                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.0" height="1.5" src="#poster-6" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 7: Kanan Atas (Top-Right) -->
+            <a-entity position="1.4 2.0 0">
+                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
+                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.0" height="1.5" src="#poster-7" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 8: Tengah (Center) -->
+            <a-entity position="0 0.76 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-8" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 9: Kiri Bawah (Bottom-Left) -->
+            <a-entity position="-1.4 -0.48 0">
+                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
+                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.0" height="1.5" src="#poster-9" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 10: Kanan Bawah (Bottom-Right) -->
+            <a-entity position="1.4 -0.48 0">
+                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
+                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.0" height="1.5" src="#poster-10" position="0 0 0.01"></a-plane>
+            </a-entity>
+        </a-entity>
+
+        <!-- Kluster Poster Dinding Kiri Tambahan (Bagian Depan: Z = -10 ke -16) -->
+        <a-entity id="left-wall-posters-front" position="-9.9 -0.7 0" rotation="0 90 0">
+            <!-- Poster 15 (Z = -11.5) -->
+            <a-entity position="11.5 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-15" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 16 (Z = -14.5) -->
+            <a-entity position="14.5 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-16" position="0 0 0.01"></a-plane>
+            </a-entity>
+        </a-entity>
+
+        <!-- Kluster Poster Dinding Kiri Tambahan (Bagian Belakang: Z = -20 ke -30) -->
+        <a-entity id="left-wall-posters-back" position="-9.9 -0.7 0" rotation="0 90 0">
+            <!-- Poster 17 (Z = -21.5) -->
+            <a-entity position="21.5 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-17" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 18 (Z = -23.8) -->
+            <a-entity position="23.8 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-18" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 19 (Z = -26.1) -->
+            <a-entity position="26.1 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-19" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 20 (Z = -28.4) -->
+            <a-entity position="28.4 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-20" position="0 0 0.01"></a-plane>
+            </a-entity>
+        </a-entity>
+
+        <!-- Kluster Poster Dinding Kanan Tambahan (Bagian Depan: Z = -10 ke -16) -->
+        <a-entity id="right-wall-posters-front" position="9.9 -0.7 0" rotation="0 -90 0">
+            <!-- Poster 21 (Z = -11.5) -->
+            <a-entity position="-11.5 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-21" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 22 (Z = -14.5) -->
+            <a-entity position="-14.5 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-22" position="0 0 0.01"></a-plane>
+            </a-entity>
+        </a-entity>
+
+        <!-- Kluster Poster Dinding Kanan Tambahan (Bagian Belakang: Z = -20 ke -30) -->
+        <a-entity id="right-wall-posters-back" position="9.9 -0.7 0" rotation="0 -90 0">
+            <!-- Poster 23 (Z = -21.5) -->
+            <a-entity position="-21.5 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-23" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 24 (Z = -23.8) -->
+            <a-entity position="-23.8 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-24" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 25 (Z = -26.1) -->
+            <a-entity position="-26.1 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-25" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 26 (Z = -28.4) -->
+            <a-entity position="-28.4 0 0">
+                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.8" src="#poster-26" position="0 0 0.01"></a-plane>
+            </a-entity>
+        </a-entity>
+
+        <!-- Dinding Ujung Belakang Trophy Room (Z=-30) -->
+        <!-- Kiri: menutup kiri tengah dan sayap kiri, dari X=-10 hingga X=6 -->
+        <a-plane class="raycast-obstacle" position="-2 0.76 -30" rotation="0 0 0" width="16" height="8" src="#wall-texture" repeat="16 8"
+            roughness="0.6" shadow="receive: true"></a-plane>
+        <!-- Kanan: menutup sisa sayap kanan setelah pintu, dari X=8 hingga X=10 -->
+        <a-plane class="raycast-obstacle" position="9 0.76 -30" rotation="0 0 0" width="2" height="8" src="#wall-texture" repeat="2 8"
+            roughness="0.6" shadow="receive: true"></a-plane>
+        <!-- Kanan: menutup sayap kanan sebelum pintu, dari X=4 hingga X=6 -->
+        <a-plane class="raycast-obstacle" position="5 0.76 -30" rotation="0 0 0" width="2" height="8" src="#wall-texture" repeat="2 8"
+            roughness="0.6" shadow="receive: true"></a-plane>
+        <!-- Atas Pintu Locker Room: dari X=6 hingga X=8, di atas celah pintu (Y=-1.04 hingga Y=4.76) -->
+        <!-- Tinggi panel = 5.8, center Y = 1.86 -->
+        <a-plane class="raycast-obstacle" position="7 1.86 -30" rotation="0 0 0" width="2" height="5.8" src="#wall-texture"
+            repeat="2 5.8" roughness="0.6" shadow="receive: true"></a-plane>
+        <!-- ====== DISPLAY MOMENT OF CHAMPIONS (Dengan Bingkai & Interaksi) ====== -->
+        <a-entity position="0 0 -29.9">
+
+            <!-- 1. Logo Liverpool & Bingkainya -->
+            <a-image src="#lfc-logo" position="0 3.5 0.02" width="2" height="2" transparent="true"></a-image>
+
+            <!-- 2. Judul Besar (Menggunakan Image SVG agar 100% muncul secara offline) -->
+            <a-image src="#txt-main-title" position="0 2.2 0.02" width="6" height="0.75" transparent="true"></a-image>
+
+            <!-- ==== SISI KIRI ==== -->
+            <!-- Kiri Atas -->
+            <a-plane position="-2 0.9 0" width="3.4" height="2.2" color="#d4af37"></a-plane>
+            <a-image class="clickable" src="#champ-1" position="-2 0.9 0.02" width="3.2" height="2"
+                match-info="title: KEAJAIBAN ISTANBUL (2005); desc: Tertinggal 3-0 dari AC Milan di babak pertama, Liverpool bangkit secara dramatis dengan mencetak 3 gol balasan dalam waktu 6 menit, and akhirnya menang lewat adu penalti untuk meraih gelar Eropa ke-5.; imgSrc: ./assets/images/istanbul2005.jpg; date: 25 Mei 2005; opponent: AC Milan; score: 3 - 3 (3 - 2 Pen); venue: Atatürk Olympic Stadium, Istanbul"></a-image>
+            <!-- Plakat Label Merah & Teks Putih -->
+            <a-plane position="-2 -0.3 0.03" width="2.4" height="0.3" color="#c8102e" shadow="receive: true">
+                <!-- Teks Putih (Menggunakan Image SVG agar 100% muncul secara offline) -->
+                <a-image src="#txt-istanbul" position="0 0  0.01" width="2.4" height="0.3" transparent="true"></a-image>
+            </a-plane>
+
+            <!-- Kiri Bawah -->
+            <a-plane position="-2 -1.6 0" width="3.4" height="2.2" color="#d4af37"></a-plane>
+            <a-image class="clickable" src="#champ-2" position="-2 -1.6 0.02" width="3.2" height="2"
+                match-info="title: KINGS OF EUROPE (2019); desc: Mengalahkan Tottenham Hotspur 2-0 di Madrid lewat gol penalti Mohamed Salah dan sepakan keras Divock Origi. Ini adalah trofi pertama di era Jurgen Klopp dan gelar Eropa ke-6 bagi The Reds.; imgSrc: ./assets/images/ligachampion.jpg; date: 01 Juni 2019; opponent: Tottenham Hotspur; score: 2 - 0; venue: Wanda Metropolitano, Madrid"></a-image>
+            <!-- Plakat Label Merah & Teks Putih -->
+            <a-plane position="-2 -2.8 0.03" width="2.4" height="0.3" color="#c8102e" shadow="receive: true">
+                <!-- Teks Putih (Menggunakan Image SVG agar 100% muncul secara offline) -->
+                <a-image src="#txt-madrid" position="0 0 0.01" width="2.4" height="0.3" transparent="true"></a-image>
+            </a-plane>
+
+            <!-- ==== SISI KANAN ==== -->
+            <!-- Kanan Atas -->
+            <a-plane position="2 0.9 0" width="3.4" height="2.2" color="#d4af37"></a-plane>
+            <a-image class="clickable" src="#champ-3" position="2 0.9 0.02" width="3.2" height="2"
+                match-info="title: PENANTIAN 30 TAHUN (2020); desc: Setelah 30 tahun puasa gelar liga, skuad asuhan Jurgen Klopp akhirnya mengangkat trofi Premier League bersejarah. Liverpool mendominasi musim dengan mengumpulkan 99 poin yang fantastis.; imgSrc: ./assets/images/ligainggri2020.jpg; date: 25 Juni 2020; opponent: Manchester City ( Chelsea menang vs City ); score: 99 Poin (Akhir Musim); venue: Anfield, Liverpool"></a-image>
+            <!-- Plakat Label Merah & Teks Putih -->
+            <a-plane position="2 -0.3 0.03" width="2.4" height="0.3" color="#c8102e" shadow="receive: true">
+                <!-- Teks Putih (Menggunakan Image SVG agar 100% muncul secara offline) -->
+                <a-image src="#txt-pl2020" position="0 0 0.01" width="2.4" height="0.3" transparent="true"></a-image>
+            </a-plane>
+
+            <!-- Kanan Bawah -->
+            <a-plane position="2 -1.6 0" width="3.4" height="2.2" color="#d4af37"></a-plane>
+            <a-image class="clickable" src="#champ-4" position="2 -1.6 0.02" width="3.2" height="2"
+                match-info="title: CHAMPIONS OF ENGLAND (2025); desc: Keberhasilan meraih gelar juara Liga Inggris ke-20 yang bersejarah di tahun 2025. Skuad The Reds tampil fantastis dengan dominasi taktik yang disiplin dan konsistensi luar biasa sepanjang musim, merayakan trofi kasta tertinggi di hadapan publik Anfield.; imgSrc: ./assets/images/ligainggris2025.jpg; date: Mei 2025; opponent: Persaingan Premier League; score: Juara Liga Inggris (Gelar ke-20); venue: Anfield, Liverpool"></a-image>
+            <!-- Plakat Label Merah & Teks Putih -->
+            <a-plane position="2 -2.8 0.03" width="2.4" height="0.3" color="#c8102e" shadow="receive: true">
+                <!-- Teks Putih (Menggunakan Image SVG agar 100% muncul secara offline) -->
+                <a-image src="#txt-pl2025" position="0 0 0.01" width="2.4" height="0.3" transparent="true"></a-image>
+            </a-plane>
+
+        </a-entity>
+
+        <!-- ====== Dinding Belakang (Sisi Pintu Masuk Lorong) ====== -->
+
+        <!-- Sisi Kiri dari Pintu Lorong -->
+        <a-plane class="raycast-obstacle" position="-5.55 0.76 -10" rotation="0 180 0" width="8.9" height="8" src="#wall-texture" repeat="8.9 8"
+            roughness="0.6" shadow="receive: true"></a-plane>
+
+        <!-- Sisi Kanan dari Pintu Lorong -->
+        <a-plane class="raycast-obstacle" position="5.55 0.76 -10" rotation="0 180 0" width="8.9" height="8" src="#wall-texture" repeat="8.9 8"
+            roughness="0.6" shadow="receive: true"></a-plane>
+
+        <!-- Bagian Atas Lorong -->
+        <a-plane class="raycast-obstacle" position="0 3.48 -10" rotation="0 180 0" width="2.2" height="2.56" src="#wall-texture"
+            repeat="2.2 2.56" roughness="0.6" shadow="receive: true"></a-plane>
+
+        <!-- ====== ATAP RUANGAN UTAMA ====== -->
+        <!-- Plafon berukuran 20x20 meter menutupi seluruh ruangan -->
+        <a-plane position="0 4.76 -20" rotation="90 0 0" width="20" height="20" color="#ffffff" material="side: double"
+            shadow="receive: true"></a-plane>
+
+        <!-- ====== SISTEM PENCAHAYAAN TROPHY ROOM ====== -->
+
+        <!-- Cahaya Dasar (Ambient) ditingkatkan agar ruangan terang secara merata -->
+        <a-light type="ambient" color="#666666"></a-light>
+
+        <!-- Lampu Neon 1 (Kiri Depan) -->
+        <a-light type="point" position="-5 4.0 -15" intensity="0.7" distance="15" decay="1" color="#ffffff"></a-light>
+        <a-box position="-5 4.74 -15" width="2.5" height="0.04" depth="0.3" color="#eeeeee"
+            material="emissive: #ffffff; emissiveIntensity: 1"></a-box>
+
+        <!-- Lampu Neon 2 (Kanan Depan) -->
+        <a-light type="point" position="5 4.0 -15" intensity="0.7" distance="15" decay="1" color="#ffffff"></a-light>
+        <a-box position="5 4.74 -15" width="2.5" height="0.04" depth="0.3" color="#eeeeee"
+            material="emissive: #ffffff; emissiveIntensity: 1"></a-box>
+
+        <!-- Lampu Neon 3 (Kiri Belakang) -->
+        <a-light type="point" position="-5 4.0 -25" intensity="0.7" distance="15" decay="1" color="#ffffff"></a-light>
+        <a-box position="-5 4.74 -25" width="2.5" height="0.04" depth="0.3" color="#eeeeee"
+            material="emissive: #ffffff; emissiveIntensity: 1"></a-box>
+
+        <!-- Lampu Neon 4 (Kanan Belakang) -->
+        <a-light type="point" position="5 4.0 -25" intensity="0.7" distance="15" decay="1" color="#ffffff"></a-light>
+        <a-box position="5 4.74 -25" width="2.5" height="0.04" depth="0.3" color="#eeeeee"
+            material="emissive: #ffffff; emissiveIntensity: 1"></a-box>
+
+        <!-- ====== SEKAT / PARTISI RUANGAN (Tinggi 4m) ====== -->
+        <!-- Lantai berada di Y = -3.24, sehingga titik tengah (Y) partisi setinggi 4m adalah -1.24 -->
+
+        <!-- Partisi Kiri  -->
+        <!-- Dinding Kiri 1 (Panjang 6m, terhubung dari dinding pintu lorong) -->
+        <a-box class="raycast-obstacle" position="-4 -1.24 -13" width="0.2" height="4" depth="6" color="#c8102e"
+            shadow="cast: true; receive: true">
+            <!-- === SISI DALAM (Menghadap Koridor Utama) === -->
+            <!-- Bingkai Kotak Emas Terluar -->
+            <a-box position="0.11 0 0" rotation="0 90 0" width="4.6" height="2.8" depth="0.04" color="#d4af37"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Bingkai Matte Hitam Lapisan Dalam -->
+            <a-box position="0.111 0 0" rotation="0 90 0" width="4.4" height="2.6" depth="0.042" color="#111111"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Gambar Utama (The Champions Wall) -->
+            <a-plane position="0.133 0 0" rotation="0 90 0" width="4.2" height="2.4" src="#champions-wall"
+                shadow="cast: true"></a-plane>
+
+            <!-- === SISI LUAR (Menghadap Sayap Kiri) === -->
+            <!-- Bingkai Kotak Emas Terluar -->
+            <a-box position="-0.11 0 0" rotation="0 -90 0" width="4.6" height="2.8" depth="0.04" color="#d4af37"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Bingkai Matte Hitam Lapisan Dalam -->
+            <a-box position="-0.111 0 0" rotation="0 -90 0" width="4.4" height="2.6" depth="0.042" color="#111111"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Gambar Utama (poster-pintu-kiri-belakang) -->
+            <a-plane position="-0.133 0 0" rotation="0 -90 0" width="4.2" height="2.4" src="#poster-pintu-kiri-belakang"
+                shadow="cast: true"></a-plane>
+        </a-box>
+        <!-- Dinding Kiri 2 (Panjang 10m, menempel ke dinding paling belakang) -->
+        <!-- Terdapat celah selebar 4 meter (Z = -16 hingga -20) sebagai jalur masuk ke Sayap Kiri -->
+        <a-box class="raycast-obstacle" position="-4 -1.24 -25" width="0.2" height="4" depth="10" color="#c8102e"
+            shadow="cast: true; receive: true">
+            <!-- Bingkai TV Layar Lebar 3D Premium di Sisi Luar (Menghadap Sayap Kiri) -->
+            <!-- Bingkai Emas Terluar -->
+            <a-box position="-0.11 0 0" rotation="0 -90 0" width="5.0" height="2.9" depth="0.04" color="#d4af37"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Bingkai Hitam TV Matte -->
+            <a-box position="-0.111 0 0" rotation="0 -90 0" width="4.8" height="2.7" depth="0.042" color="#111111"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Layar Video Interaktif -->
+            <a-video class="clickable" src="#video-istanbul" position="-0.133 0 0" rotation="0 -90 0" width="4.6" height="2.5"
+                video-screen="videoEl: #video-istanbul" shadow="cast: true"></a-video>
+            <!-- Judul Video Diatas Layar (Sesuai nama file) -->
+            <a-text value="MIRACLE OF ISTANBUL" position="-0.133 1.7 0" rotation="0 -90 0"
+                align="center" width="6" color="#d4af37" font="aileronsemibold"
+                shader="msdf" wrap-count="20"></a-text>
+        </a-box>
+
+        <!-- Partisi Kanan (Memisahkan Trophy Room & Sayap Kanan) -->
+        <!-- Dinding Kanan 1 (Panjang 6m, terhubung dari dinding pintu lorong) -->
+        <a-box class="raycast-obstacle" position="4 -1.24 -13" width="0.2" height="4" depth="6" color="#c8102e"
+            shadow="cast: true; receive: true">
+            <!-- === SISI DALAM (Menghadap Koridor Utama) === -->
+            <!-- Bingkai Kotak Emas Terluar -->
+            <a-box position="-0.11 0 0" rotation="0 -90 0" width="4.6" height="2.8" depth="0.04" color="#d4af37"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Bingkai Matte Hitam Lapisan Dalam -->
+            <a-box position="-0.111 0 0" rotation="0 -90 0" width="4.4" height="2.6" depth="0.042" color="#111111"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Gambar Utama (poster-pintu-kanan) -->
+            <a-plane position="-0.133 0 0" rotation="0 -90 0" width="4.2" height="2.4" src="#poster-pintu-kanan"
+                shadow="cast: true"></a-plane>
+
+            <!-- === SISI LUAR (Menghadap Sayap Kanan) === -->
+            <!-- Bingkai Kotak Emas Terluar -->
+            <a-box position="0.11 0 0" rotation="0 90 0" width="4.6" height="2.8" depth="0.04" color="#d4af37"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Bingkai Matte Hitam Lapisan Dalam -->
+            <a-box position="0.111 0 0" rotation="0 90 0" width="4.4" height="2.6" depth="0.042" color="#111111"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Gambar Utama (poster-pintu-kanan-belakang) -->
+            <a-plane position="0.133 0 0" rotation="0 90 0" width="4.2" height="2.4" src="#poster-pintu-kanan-belakang"
+                shadow="cast: true"></a-plane>
+        </a-box>
+        <!-- Dinding Kanan 2 (Panjang 10m, menempel ke dinding paling belakang) -->
+        <!-- Terdapat celah selebar 4 meter sebagai jalur masuk ke Sayap Kanan -->
+        <a-box class="raycast-obstacle" position="4 -1.24 -25" width="0.2" height="4" depth="10" color="#c8102e"
+            shadow="cast: true; receive: true">
+            <!-- Bingkai TV Layar Lebar 3D Premium di Sisi Luar (Menghadap Sayap Kanan) -->
+            <!-- Bingkai Emas Terluar -->
+            <a-box position="0.11 0 0" rotation="0 90 0" width="5.0" height="2.9" depth="0.04" color="#d4af37"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Bingkai Hitam TV Matte -->
+            <a-box position="0.111 0 0" rotation="0 90 0" width="4.8" height="2.7" depth="0.042" color="#111111"
+                shadow="cast: true; receive: true"></a-box>
+            <!-- Layar Video Interaktif -->
+            <a-video class="clickable" src="#video-anfield" position="0.133 0 0" rotation="0 90 0" width="4.6" height="2.5"
+                video-screen="videoEl: #video-anfield" shadow="cast: true"></a-video>
+            <!-- Judul Video Diatas Layar (Sesuai nama file) -->
+            <a-text value="MIRACLE OF ANFIELD" position="0.133 1.7 0" rotation="0 90 0"
+                align="center" width="6" color="#d4af37" font="aileronsemibold"
+                shader="msdf" wrap-count="20"></a-text>
+        </a-box>
+
+        <!-- ====== PODIUM PIALA LIVERPOOL ====== -->
+
+        <!-- Sayap Kiri (Di depan Dinding Kiri 2 - Posisi X: -3.5, Rotasi: 0 -90 0) -->
+        <!-- 1. Premier League -->
+        <a-entity id="podium-premier-league" position="-3.5 -2.49 -20.8" rotation="0 -90 0">
+            <!-- Tiang Podium -->
+            <a-cylinder position="0 0 0" radius="0.35" height="1.5" src="#podium-texture" roughness="0.6"
+                metalness="0.3" shadow="cast: true; receive: true"></a-cylinder>
+            <a-ring position="0 0.755 0" rotation="-90 0 0" radius-inner="0.32" radius-outer="0.35"
+                color="#d4af37"></a-ring>
+            <!-- Model Piala -->
+            <a-gltf-model src="#trophy-premier-league" position="0 0.75 0" rotation="0 180 0" scale="0.2 0.2 0.2"
+                shadow="cast: true"></a-gltf-model>
+            <!-- Lampu Sorot -->
+            <a-light type="point" color="#ffffff" intensity="1.2" distance="4" decay="1.5" position="0 1.29 -0.4"
+                shadow="cast: false"></a-light>
+            <!-- Papan Nama -->
+            <a-plane position="0 1.69 -0.02" width="1.4" height="0.4" color="#c8102e" rotation="0 180 0"
+                shadow="receive: true">
+                <a-image src="#txt-premier-league" position="0 0 0.01" width="1.4" height="0.4"
+                    transparent="true"></a-image>
+            </a-plane>
+            <!-- Zona Interaktif (Sensing Gaze) -->
+            <a-cylinder class="clickable" position="0 1.1 0" radius="0.38" height="0.7"
+                material="color: #ff0000; opacity: 0; transparent: true"
+                trophy-info="modelId: trophy-premier-league; modelType: gltf; modelScale: 0.2 0.2 0.2; title: LEAGUE CHAMPIONS (20 Titles); desc: Liverpool adalah penguasa sepak bola Inggris dengan koleksi 20 gelar liga. Mulai dari era dominasi legendaris Bill Shankly dan Bob Paisley, hingga penantian 30 tahun yang berakhir dramatis di bawah asuhan Jurgen Klopp pada musim 2019/2020 dengan raihan 99 poin."></a-cylinder>
+        </a-entity>
+
+        <!-- 2. Champions League -->
+        <a-entity id="podium-champions-league" position="-3.5 -2.49 -22.8" rotation="0 -90 0">
+            <!-- Tiang Podium -->
+            <a-cylinder position="0 0 0" radius="0.35" height="1.5" src="#podium-texture" roughness="0.6"
+                metalness="0.3" shadow="cast: true; receive: true"></a-cylinder>
+            <a-ring position="0 0.755 0" rotation="-90 0 0" radius-inner="0.32" radius-outer="0.35"
+                color="#d4af37"></a-ring>
+            <!-- Model Piala -->
+            <a-gltf-model src="#trophy-champions-league" position="0 0.75 0" rotation="0 180 0" scale="0.2 0.2 0.2"
+                shadow="cast: true"></a-gltf-model>
+            <!-- Lampu Sorot -->
+            <a-light type="point" color="#ffffff" intensity="1.2" distance="4" decay="1.5" position="0 1.29 -0.4"
+                shadow="cast: false"></a-light>
+            <!-- Papan Nama -->
+            <a-plane position="0 1.69 -0.02" width="1.8" height="0.4" color="#c8102e" rotation="0 180 0"
+                shadow="receive: true">
+                <a-image src="#txt-champions-league" position="0 0 0.01" width="1.8" height="0.4"
+                    transparent="true"></a-image>
+            </a-plane>
+            <!-- Zona Interaktif (Sensing Gaze) -->
+            <a-cylinder class="clickable" position="0 1.1 0" radius="0.38" height="0.7"
+                material="color: #ff0000; opacity: 0; transparent: true"
+                trophy-info="modelId: trophy-champions-league; modelType: gltf; modelScale: 0.2 0.2 0.2; title: KINGS OF EUROPE (6 Trophies); desc: Klub Inggris paling sukses di panggung tertinggi Eropa. Mengoleksi 6 trofi Si Kuping Besar, mulai dari kejuaraan pertama di Roma 1977, malam keajaiban tak terlupakan di Istanbul 2005 saat mengejar ketertinggalan 3-0, hingga kejayaan di Madrid 2019."></a-cylinder>
+        </a-entity>
+
+        <!-- 3. FA Cup -->
+        <a-entity id="podium-fa-cup" position="-3.5 -2.49 -24.8" rotation="0 -90 0">
+            <!-- Tiang Podium -->
+            <a-cylinder position="0 0 0" radius="0.35" height="1.5" src="#podium-texture" roughness="0.6"
+                metalness="0.3" shadow="cast: true; receive: true"></a-cylinder>
+            <a-ring position="0 0.755 0" rotation="-90 0 0" radius-inner="0.32" radius-outer="0.35"
+                color="#d4af37"></a-ring>
+            <!-- Model Piala -->
+            <a-gltf-model src="#trophy-fa-cup" position="0 0.75 0" rotation="0 180 0" scale="14 14 14"
+                shadow="cast: true"></a-gltf-model>
+            <!-- Lampu Sorot -->
+            <a-light type="point" color="#ffffff" intensity="1.2" distance="4" decay="1.5" position="0 1.29 -0.4"
+                shadow="cast: false"></a-light>
+            <!-- Papan Nama -->
+            <a-plane position="0 1.69 -0.02" width="1.8" height="0.4" color="#c8102e" rotation="0 180 0"
+                shadow="receive: true">
+                <a-image src="#txt-fa-cup" position="0 0 0.01" width="1.8" height="0.4" transparent="true"></a-image>
+            </a-plane>
+            <!-- Zona Interaktif (Sensing Gaze) -->
+            <a-cylinder class="clickable" position="0 1.1 0" radius="0.38" height="0.7"
+                material="color: #ff0000; opacity: 0; transparent: true"
+                trophy-info="modelId: trophy-fa-cup; modelType: gltf; modelScale: 14 14 14; title: THE FA CUP (8 Trophies); desc: Piala domestik tertua dan paling bergengsi di dunia. Kompetisi penuh drama yang penuh dengan momen ikonik The Reds, termasuk 'Final Michael Owen' pada tahun 2001, tendangan roket jarak jauh Steven Gerrard di tahun 2006, hingga gelar terbaru di tahun 2022."></a-cylinder>
+        </a-entity>
+
+        <!-- 4. Carabao Cup (League Cup) -->
+        <a-entity id="podium-league-cup" position="-3.5 -2.49 -26.8" rotation="0 -90 0">
+            <!-- Tiang Podium -->
+            <a-cylinder position="0 0 0" radius="0.35" height="1.5" src="#podium-texture" roughness="0.6"
+                metalness="0.3" shadow="cast: true; receive: true"></a-cylinder>
+            <a-ring position="0 0.755 0" rotation="-90 0 0" radius-inner="0.32" radius-outer="0.35"
+                color="#d4af37"></a-ring>
+            <!-- Model Piala -->
+            <a-gltf-model src="#trophy-league-cup" position="0 0.9 0" rotation="0 180 0" scale="0.3 0.3 0.3"
+                shadow="cast: true"></a-gltf-model>
+            <!-- Lampu Sorot -->
+            <a-light type="point" color="#ffffff" intensity="1.2" distance="4" decay="1.5" position="0 1.29 -0.4"
+                shadow="cast: false"></a-light>
+            <!-- Papan Nama -->
+            <a-plane position="0 1.69 -0.02" width="1.8" height="0.4" color="#c8102e" rotation="0 180 0"
+                shadow="receive: true">
+                <a-image src="#txt-carabao-cup" position="0 0 0.01" width="1.8" height="0.4"
+                    transparent="true"></a-image>
+            </a-plane>
+            <!-- Zona Interaktif (Sensing Gaze) -->
+            <a-cylinder class="clickable" position="0 1.1 0" radius="0.38" height="0.7"
+                material="color: #ff0000; opacity: 0; transparent: true"
+                trophy-info="modelId: trophy-league-cup; modelType: gltf; modelScale: 0.3 0.3 0.3; title: LEAGUE CUP RECORD (10 Trophies); desc: Liverpool memegang rekor sebagai klub pemenang trofi Piala Liga terbanyak sepanjang sejarah sepak bola Inggris dengan 10 gelar. Kompetisi ini sering kali menjadi panggung lahirnya bintang-bintang muda berbakat akademi Anfield."></a-cylinder>
+        </a-entity>
+
+        <!-- Sayap Kanan (Di depan Dinding Kanan 2 - Posisi X: 3.5, Rotasi: 0 90 0) -->
+        <!-- 5. Europa League -->
+        <a-entity id="podium-europa-league" position="3.5 -2.49 -22.75" rotation="0 90 0">
+            <!-- Tiang Podium -->
+            <a-cylinder position="0 0 0" radius="0.35" height="1.5" src="#podium-texture" roughness="0.6"
+                metalness="0.3" shadow="cast: true; receive: true"></a-cylinder>
+            <a-ring position="0 0.755 0" rotation="-90 0 0" radius-inner="0.32" radius-outer="0.35"
+                color="#d4af37"></a-ring>
+            <!-- Model Piala (OBJ) -->
+            <a-entity obj-model="obj: #trophy-europa-league" material="color: #d4af37; metalness: 0.8; roughness: 0.2"
+                position="0 0.75 0" rotation="0 180 0" scale="0.8 0.8 0.8" shadow="cast: true"></a-entity>
+            <!-- Lampu Sorot -->
+            <a-light type="point" color="#ffffff" intensity="1.2" distance="4" decay="1.5" position="0 1.29 -0.4"
+                shadow="cast: false"></a-light>
+            <!-- Papan Nama -->
+            <a-plane position="0 1.69 -0.02" width="1.8" height="0.4" color="#c8102e" rotation="0 180 0"
+                shadow="receive: true">
+                <a-image src="#txt-europa-league" position="0 0 0.01" width="1.8" height="0.4"
+                    transparent="true"></a-image>
+            </a-plane>
+            <!-- Zona Interaktif (Sensing Gaze) -->
+            <a-cylinder class="clickable" position="0 1.1 0" radius="0.38" height="0.7"
+                material="color: #ff0000; opacity: 0; transparent: true"
+                trophy-info="modelId: trophy-europa-league; modelType: obj; modelScale: 0.8 0.8 0.8; title: UEFA CUP TRIUMPHS (3 Trophies); desc: Tiga kali memenangkan kompetisi kasta kedua Eropa pada tahun 1973, 1976, dan puncaknya pada final legendaris tahun 2001 melawan Deportivo Alaves yang berakhir dengan skor epik 5-4 melalui aturan Golden Goal, melengkapi raihan Treble Winner."></a-cylinder>
+        </a-entity>
+
+        <!-- 6. UEFA Super Cup -->
+        <a-entity id="podium-super-cup" position="3.5 -2.49 -25.25" rotation="0 90 0">
+            <!-- Tiang Podium -->
+            <a-cylinder position="0 0 0" radius="0.35" height="1.5" src="#podium-texture" roughness="0.6"
+                metalness="0.3" shadow="cast: true; receive: true"></a-cylinder>
+            <a-ring position="0 0.755 0" rotation="-90 0 0" radius-inner="0.32" radius-outer="0.35"
+                color="#d4af37"></a-ring>
+            <!-- Model Piala -->
+            <a-gltf-model src="#trophy-super-cup" position="0 0.75 0" rotation="0 180 0" scale="0.2 0.2 0.2"
+                shadow="cast: true"></a-gltf-model>
+            <!-- Lampu Sorot -->
+            <a-light type="point" color="#ffffff" intensity="1.2" distance="4" decay="1.5" position="0 1.29 -0.4"
+                shadow="cast: false"></a-light>
+            <!-- Papan Nama -->
+            <a-plane position="0 1.69 -0.02" width="1.8" height="0.4" color="#c8102e" rotation="0 180 0"
+                shadow="receive: true">
+                <a-image src="#txt-super-cup" position="0 0 0.01" width="1.8" height="0.4" transparent="true"></a-image>
+            </a-plane>
+            <!-- Zona Interaktif (Sensing Gaze) -->
+            <a-cylinder class="clickable" position="0 1.1 0" radius="0.38" height="0.7"
+                material="color: #ff0000; opacity: 0; transparent: true"
+                trophy-info="modelId: trophy-super-cup; modelType: gltf; modelScale: 0.2 0.2 0.2; title: UEFA SUPER CUP (4 Trophies); desc: Menegaskan status sebagai raja Eropa dengan memenangkan 4 pertandingan Super Cup melawan sesama juara kompetisi Eropa lainnya. Dimenangkan pada tahun 1977, 2001, 2005 setelah malam Istanbul, dan terbaru pada tahun 2019 di Istanbul."></a-cylinder>
+        </a-entity>
+
+        <!-- 7. FIFA Club World Cup -->
+        <a-entity id="podium-club-world-cup" position="3.5 -2.49 -27.75" rotation="0 90 0">
+            <!-- Tiang Podium -->
+            <a-cylinder position="0 0 0" radius="0.35" height="1.5" src="#podium-texture" roughness="0.6"
+                metalness="0.3" shadow="cast: true; receive: true"></a-cylinder>
+            <a-ring position="0 0.755 0" rotation="-90 0 0" radius-inner="0.32" radius-outer="0.35"
+                color="#d4af37"></a-ring>
+            <!-- Model Piala -->
+            <a-gltf-model src="#trophy-club-world-cup" position="0 0.75 0" rotation="0 180 0" scale="1 1 1"
+                shadow="cast: true"></a-gltf-model>
+            <!-- Lampu Sorot -->
+            <a-light type="point" color="#ffffff" intensity="1.2" distance="4" decay="1.5" position="0 1.29 -0.4"
+                shadow="cast: false"></a-light>
+            <!-- Papan Nama -->
+            <a-plane position="0 1.69 -0.02" width="1.8" height="0.4" color="#c8102e" rotation="0 180 0"
+                shadow="receive: true">
+                <a-image src="#txt-club-world-cup" position="0 0.0 0.01" width="1.8" height="0.4"
+                    transparent="true"></a-image>
+            </a-plane>
+            <!-- Zona Interaktif (Sensing Gaze) -->
+            <a-cylinder class="clickable" position="0 1.1 0" radius="0.38" height="0.7"
+                material="color: #ff0000; opacity: 0; transparent: true"
+                trophy-info="modelId: trophy-club-world-cup; modelType: gltf; modelScale: 1 1 1; title: WORLD CHAMPIONS (1 Trophy); desc: Gelar juara dunia antar klub pertama dalam sejarah panjang Liverpool FC. Diraih pada Desember 2019 di Qatar setelah mengalahkan klub Brasil, Flamengo, lewat gol tunggal Roberto Firmino di babak perpanjangan waktu yang menegangkan."></a-cylinder>
+        </a-entity>
+
+        <!-- ============================================== -->
+        <!-- ============================================== -->
+        <!-- ====== RUANG GANTI LIVERPOOL (LOCKER ROOM) ====== -->
+        <!-- Dimensi: 16m lebar (X: -8 hingga 8), 14m panjang (Z: -30 hingga -44) -->
+        <!-- Lantai: Y = -3.24 (sama dengan Trophy Room) -->
+        <!-- Pintu: Di sayap kanan (X=7, Z=-30), antara sekat kanan (X=4) dan tembok kanan (X=10) -->
+        <!-- ============================================== -->
+
+        <!-- ====== PINTU MASUK LOCKER ROOM (Sayap Kanan, X=7) ====== -->
+        <!-- Posisi pintu: X=7, Z=-30. Lantai Y=-3.24, door height=2.2m, center Y=-3.24+1.1=-2.14 -->
+        <!-- Frame Pintu Emas -->
+        <a-box position="6.0 -2.14 -30.0" width="0.12" height="2.3" depth="0.18" color="#d4af37" metalness="0.6" roughness="0.2" shadow="cast: true"></a-box>
+        <a-box position="8.0 -2.14 -30.0" width="0.12" height="2.3" depth="0.18" color="#d4af37" metalness="0.6" roughness="0.2" shadow="cast: true"></a-box>
+        <a-box position="7 -1.02 -30.0" width="2.15" height="0.12" depth="0.18" color="#d4af37" metalness="0.6" roughness="0.2" shadow="cast: true"></a-box>
+        <!-- Daun Pintu Otomatis (engsel di kiri X=6.06, membuka ke dalam/belakang) -->
+        <a-entity id="locker-door-main" position="6.06 -2.14 -30.08" auto-door="triggerDistance: 3">
+            <!-- Daun pintu bergerak 1.94m ke kanan dari engsel -->
+            <a-box class="raycast-obstacle" position="0.97 0 0" width="1.94" height="2.18" depth="0.06"
+                color="#c8102e" metalness="0.1" roughness="0.8" shadow="cast: true; receive: true"></a-box>
+            <!-- Gagang Pintu Emas -->
+            <a-cylinder position="1.75 0 0.05" radius="0.03" height="0.14" rotation="90 0 0"
+                color="#d4af37" metalness="0.8" roughness="0.1"></a-cylinder>
+        </a-entity>
+        <!-- Teks "LOCKER ROOM" di atas pintu, menghadap Trophy Room -->
+        <a-text value="LOCKER ROOM" position="7 -0.82 -29.8" align="center" color="#d4af37"
+            width="3" wrap-count="12" shader="msdf"></a-text>
+        <!-- Lampu sorot kecil di atas pintu agar terlihat jelas -->
+        <a-light type="point" position="7 -0.6 -29.5" intensity="0.4" distance="3" decay="1.5" color="#d4af37"></a-light>
+
+        <!-- ====== LANTAI KAYU LOCKER ROOM ====== -->
+        <!-- Lantai kayu (warna kayu oak natural) -->
+        <a-plane position="0 -3.24 -37" rotation="-90 0 0" width="16" height="14" color="#c8a96e"
+            roughness="0.85" metalness="0.0" shadow="receive: true"></a-plane>
+        <!-- Tekstur papan kayu (garis-garis horizontal) menggunakan beberapa strip sempit -->
+        <a-entity id="lr-floor-planks" position="0 -3.235 -37">
+            <a-plane rotation="-90 0 0" position="0 0 -5" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
+            <a-plane rotation="-90 0 0" position="0 0 -3.5" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
+            <a-plane rotation="-90 0 0" position="0 0 -2" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
+            <a-plane rotation="-90 0 0" position="0 0 -0.5" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
+            <a-plane rotation="-90 0 0" position="0 0 1" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
+            <a-plane rotation="-90 0 0" position="0 0 2.5" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
+            <a-plane rotation="-90 0 0" position="0 0 4" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
+        </a-entity>
+
+        <!-- Logo Liverpool Besar di Tengah Lantai -->
+        <a-image src="#lfc-logo" position="0 -3.21 -37" rotation="-90 0 0" width="4.5" height="4.5" transparent="true" material="opacity: 0.75; shader: flat"></a-image>
+
+        <!-- ====== LANGIT-LANGIT LOCKER ROOM (Bergaris Merah-Putih) ====== -->
+        <!-- Plafon dasar putih -->
+        <a-plane position="0 0.76 -37" rotation="90 0 0" width="16" height="14" color="#f0f0f0" material="side: double" shadow="receive: true"></a-plane>
+        <!-- Strip merah horizontal (menciptakan efek slatted ceiling khas Liverpool) -->
+        <a-entity id="lr-ceiling-stripes" position="0 0.74 -37">
+            <a-box position="0 0 -6.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 -5.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 -4.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 -3.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 -2.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 -1.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 -0.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 0.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 1.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 2.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 3.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 4.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 5.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+            <a-box position="0 0 6.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
+        </a-entity>
+
+        <!-- ====== DINDING LOCKER ROOM ====== -->
+        <!-- Dinding Kiri (X = -8) - Merah dengan panel putih -->
+        <a-plane class="raycast-obstacle" position="-8 -1.24 -37" rotation="0 90 0" width="14" height="4.0" color="#c8102e" roughness="0.6" shadow="receive: true"></a-plane>
+        <!-- Panel putih dinding kiri (menjadi latar loker) -->
+        <a-plane position="-7.95 -0.74 -37" rotation="0 90 0" width="13" height="2.5" color="#f5f5f5" roughness="0.4"></a-plane>
+
+        <!-- Dinding Kanan (X = 8) - Merah dengan panel putih -->
+        <a-plane class="raycast-obstacle" position="8 -1.24 -37" rotation="0 -90 0" width="14" height="4.0" color="#c8102e" roughness="0.6" shadow="receive: true"></a-plane>
+        <!-- Panel putih dinding kanan -->
+        <a-plane position="7.95 -0.74 -37" rotation="0 -90 0" width="13" height="2.5" color="#f5f5f5" roughness="0.4"></a-plane>
+
+        <!-- Dinding Belakang (Z = -44) - Merah + Teks YNWA -->
+        <a-plane class="raycast-obstacle" position="0 -1.24 -44" rotation="0 0 0" width="16" height="4.0" color="#c8102e" roughness="0.6" shadow="receive: true"></a-plane>
+        <!-- Panel putih dinding belakang (latar loker) -->
+        <a-plane position="0 -0.74 -43.95" rotation="0 0 0" width="15" height="2.5" color="#f5f5f5" roughness="0.4"></a-plane>
+        <!-- Teks "YOU'LL NEVER WALK ALONE" di atas panel dinding belakang -->
+        <a-text value="YOU'LL NEVER WALK ALONE" position="0 0.55 -43.9" align="center" color="#d4af37" width="10" wrap-count="25" shader="msdf"></a-text>
+
+        <!-- Dinding Depan (Z = -30, menghadap dalam ruang ganti agar tidak terlihat transparan dari dalam) -->
+        <!-- Bagian Kiri dari pintu (X=-8 hingga X=6) -->
+        <a-plane class="raycast-obstacle" position="-1 -1.24 -30" rotation="0 180 0" width="14" height="4.0" color="#c8102e" roughness="0.6" shadow="receive: true"></a-plane>
+        <!-- Bagian Atas pintu (Menutup celah atas sampai langit-langit agar teks tidak terlihat) -->
+        <a-plane class="raycast-obstacle" position="7 -0.145 -30" rotation="0 180 0" width="2" height="1.81" color="#c8102e" roughness="0.6" shadow="receive: true"></a-plane>
+
+        <!-- ====== 24 LOKER PEMAIN ====== -->
+
+        <!-- DINDING KIRI (X = -8, Rotasi = 0 90 0) - Kiper & Bek (8 Loker) -->
+        <!-- Disusun dari Z = -31 hingga Z = -41.5 dengan jarak ~1.5m -->
+        <a-entity liverpool-locker="playerName: A.BECKER; playerNumber: 1; isGK: true" position="-7.95 -3.24 -31.5" rotation="0 90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: ADRIAN; playerNumber: 13; isGK: true" position="-7.95 -3.24 -33.0" rotation="0 90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: ROBERTSON; playerNumber: 26" position="-7.95 -3.24 -34.5" rotation="0 90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: VIRGIL; playerNumber: 4" position="-7.95 -3.24 -36.0" rotation="0 90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: MATIP; playerNumber: 32" position="-7.95 -3.24 -37.5" rotation="0 90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: GOMEZ; playerNumber: 12" position="-7.95 -3.24 -39.0" rotation="0 90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: LOVREN; playerNumber: 6" position="-7.95 -3.24 -40.5" rotation="0 90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: TRENT; playerNumber: 66" position="-7.95 -3.24 -42.0" rotation="0 90 0"></a-entity>
+
+        <!-- DINDING BELAKANG (Z = -44, Rotasi = 0 0 0) - Gelandang (8 Loker) -->
+        <!-- Disusun dari X = -5.25 hingga X = 5.25 -->
+        <a-entity liverpool-locker="playerName: FABINHO; playerNumber: 3" position="-5.25 -3.24 -43.9" rotation="0 0 0"></a-entity>
+        <a-entity liverpool-locker="playerName: WIJNALDUM; playerNumber: 5" position="-3.75 -3.24 -43.9" rotation="0 0 0"></a-entity>
+        <a-entity liverpool-locker="playerName: HENDERSON; playerNumber: 14" position="-2.25 -3.24 -43.9" rotation="0 0 0"></a-entity>
+        <a-entity liverpool-locker="playerName: MILNER; playerNumber: 7" position="-0.75 -3.24 -43.9" rotation="0 0 0"></a-entity>
+        <a-entity liverpool-locker="playerName: KEITA; playerNumber: 8" position="0.75 -3.24 -43.9" rotation="0 0 0"></a-entity>
+        <a-entity liverpool-locker="playerName: O.-CHAMBERLAIN; playerNumber: 15" position="2.25 -3.24 -43.9" rotation="0 0 0"></a-entity>
+        <a-entity liverpool-locker="playerName: LALLANA; playerNumber: 20" position="3.75 -3.24 -43.9" rotation="0 0 0"></a-entity>
+        <a-entity liverpool-locker="playerName: SHAQIRI; playerNumber: 23" position="5.25 -3.24 -43.9" rotation="0 0 0"></a-entity>
+
+        <!-- DINDING KANAN (X = 8, Rotasi = 0 -90 0) - Penyerang & Pemain Muda (8 Loker) -->
+        <a-entity liverpool-locker="playerName: MANE; playerNumber: 10" position="7.95 -3.24 -42.0" rotation="0 -90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: FIRMINO; playerNumber: 9" position="7.95 -3.24 -40.5" rotation="0 -90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: SALAH; playerNumber: 11" position="7.95 -3.24 -39.0" rotation="0 -90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: ORIGI; playerNumber: 27" position="7.95 -3.24 -37.5" rotation="0 -90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: MINAMINO; playerNumber: 18" position="7.95 -3.24 -36.0" rotation="0 -90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: ELLIOTT; playerNumber: 67" position="7.95 -3.24 -34.5" rotation="0 -90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: WILLIAMS; playerNumber: 76" position="7.95 -3.24 -33.0" rotation="0 -90 0"></a-entity>
+        <a-entity liverpool-locker="playerName: KELLEHER; playerNumber: 62; isGK: true" position="7.95 -3.24 -31.5" rotation="0 -90 0"></a-entity>
+
+        <!-- ====== PENCAHAYAAN LOCKER ROOM (Dikurangi agar tidak silau) ====== -->
+        <!-- Lampu Neon Langit-langit (Visual saja) -->
+        <a-box position="-3 0.72 -33" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
+        <a-box position="3 0.72 -33" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
+        <a-box position="-3 0.72 -37" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
+        <a-box position="3 0.72 -37" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
+        <a-box position="-3 0.72 -41" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
+        <a-box position="3 0.72 -41" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
+
+        <!-- Pencahayaan Utama Ruang Ganti (Dioptimalkan menjadi 1 Point Light + 1 Ambient untuk menghemat FPS) -->
+        <a-light type="ambient" color="#fffbe6" intensity="0.15"></a-light>
+        <a-light type="point" position="0 0.5 -37" intensity="0.25" distance="18" decay="1.2" color="#fffbe6"></a-light>
+        <!-- Sorot loker (dikurangi intensitas) -->
+        <a-light type="spot" position="-6 0.3 -36.5" target="#left-wall-target" intensity="0.25" distance="7" angle="45" color="#fffbe6" shadow="cast: false"></a-light>
+        <a-entity id="left-wall-target" position="-7.9 -1.5 -36.5"></a-entity>
+        <a-light type="spot" position="6 0.3 -36.5" target="#right-wall-target" intensity="0.25" distance="7" angle="45" color="#fffbe6" shadow="cast: false"></a-light>
+        <a-entity id="right-wall-target" position="7.9 -1.5 -36.5"></a-entity>
+        <a-light type="spot" position="0 0.3 -42" target="#back-wall-target" intensity="0.3" distance="5" angle="40" color="#fffbe6" shadow="cast: false"></a-light>
+        <a-entity id="back-wall-target" position="0 -1.5 -43.9"></a-entity>
+        <!-- Ambient TIDAK ditambahkan ulang di sini (sudah ada ambient global di Trophy Room) -->
+
+    </a-scene>
+</body>
+
+</html>

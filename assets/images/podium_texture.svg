@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Background: Charcoal marble color -->
+  <rect width="512" height="512" fill="#1b1c20" />
+  
+  <!-- Subtle dark details -->
+  <path d="M0,0 Q128,64 256,0 T512,0" fill="none" stroke="#25272d" stroke-width="8" opacity="0.3" />
+  <path d="M0,256 Q200,300 350,220 T512,300" fill="none" stroke="#121316" stroke-width="12" opacity="0.5" />
+  
+  <!-- Golden veins -->
+  <path d="M50,0 C120,100 80,250 200,320 S400,450 480,512" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6" />
+  <path d="M60,0 C130,110 90,240 210,310 S410,440 490,512" fill="none" stroke="#b8932c" stroke-width="1" opacity="0.4" />
+  
+  <path d="M450,0 C300,150 380,300 250,400 S50,480 0,500" fill="none" stroke="#d4af37" stroke-width="2.5" opacity="0.5" />
+  <path d="M200,0 C100,80 150,180 80,300 S120,420 180,512" fill="none" stroke="#d4af37" stroke-width="1.5" opacity="0.4" />
+  <path d="M512,100 C400,180 420,250 380,380 S480,480 512,500" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.5" />
+
+  <!-- Diagonal highlight veins -->
+  <path d="M0,150 Q100,120 150,80 T300,0" fill="none" stroke="#d4af37" stroke-width="1" opacity="0.3" />
+  <path d="M250,512 C300,450 400,420 512,380" fill="none" stroke="#d4af37" stroke-width="1.5" opacity="0.4" />
+</svg>

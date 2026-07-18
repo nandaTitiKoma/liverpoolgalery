@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <!-- Mortar background (light gray cement lines) -->
+  <rect width="256" height="256" fill="#e2e5e9" />
+  
+  <!-- Alternating brick layout with bright/off-white variations -->
+  <g stroke="#e2e5e9" stroke-width="2" opacity="0.95">
+    <!-- Row 1 (Y: 0-32) -->
+    <rect x="0" y="0" width="126" height="30" rx="1.5" fill="#ffffff" />
+    <rect x="128" y="0" width="126" height="30" rx="1.5" fill="#f8f9fa" />
+    
+    <!-- Row 2 (Y: 32-64) -->
+    <rect x="-64" y="32" width="126" height="30" rx="1.5" fill="#f3f4f6" />
+    <rect x="64" y="32" width="126" height="30" rx="1.5" fill="#fafafa" />
+    <rect x="192" y="32" width="126" height="30" rx="1.5" fill="#f8f9fa" />
+    
+    <!-- Row 3 (Y: 64-96) -->
+    <rect x="0" y="64" width="126" height="30" rx="1.5" fill="#fcfcfd" />
+    <rect x="128" y="64" width="126" height="30" rx="1.5" fill="#ffffff" />
+    
+    <!-- Row 4 (Y: 96-128) -->
+    <rect x="-64" y="96" width="126" height="30" rx="1.5" fill="#fafafa" />
+    <rect x="64" y="96" width="126" height="30" rx="1.5" fill="#f1f3f5" />
+    <rect x="192" y="96" width="126" height="30" rx="1.5" fill="#fcfcfd" />
+
+    <!-- Row 5 (Y: 128-160) -->
+    <rect x="0" y="128" width="126" height="30" rx="1.5" fill="#f8f9fa" />
+    <rect x="128" y="128" width="126" height="30" rx="1.5" fill="#ffffff" />
+
+    <!-- Row 6 (Y: 160-192) -->
+    <rect x="-64" y="160" width="126" height="30" rx="1.5" fill="#fcfcfd" />
+    <rect x="64" y="160" width="126" height="30" rx="1.5" fill="#fafafa" />
+    <rect x="192" y="160" width="126" height="30" rx="1.5" fill="#f3f4f6" />
+
+    <!-- Row 7 (Y: 192-224) -->
+    <rect x="0" y="192" width="126" height="30" rx="1.5" fill="#ffffff" />
+    <rect x="128" y="192" width="126" height="30" rx="1.5" fill="#fafafa" />
+
+    <!-- Row 8 (Y: 224-256) -->
+    <rect x="-64" y="224" width="126" height="30" rx="1.5" fill="#fafafa" />
+    <rect x="64" y="224" width="126" height="30" rx="1.5" fill="#f1f3f5" />
+    <rect x="192" y="224" width="126" height="30" rx="1.5" fill="#ffffff" />
+  </g>
+</svg>
