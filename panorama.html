@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anfield 360° Panorama - Liverpool FC Museum</title>
+    <!-- Import A-Frame (Versi yang sama dengan gallery) -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="./js/components.js"></script>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <!-- A-Frame Scene -->
+    <a-scene cursor="rayOrigin: mouse">
+        <!-- Asset Management -->
+        <a-assets>
+            <img id="anfield-panorama" src="./assets/images/anfield_panorama.png?v=2">
+            <audio id="anthem" src="./assets/audio/youll never walk alone.mp3" preload="auto" loop="true"></audio>
+        </a-assets>
+
+        <!-- Script untuk memutar lagu secara otomatis dengan volume rendah -->
+        <script>
+            document.querySelector('a-scene').addEventListener('loaded', function () {
+                const anthem = document.getElementById('anthem');
+                if (anthem) {
+                    anthem.volume = 0.15;
+                    // Play setelah scene dimuat. Karena user berpindah dari halaman yang sama (interaksi sebelumnya),
+                    // browser biasanya mengizinkan autoplay di sini.
+                    anthem.play().catch(e => console.warn('Autoplay dicegah browser:', e));
+                }
+            });
+        </script>
+
+        <!-- Kamera khusus panorama, jalan kaki dinonaktifkan (wasd-controls="enabled: false") -->
+        <!-- pointerLockEnabled: true agar bisa memutar kamera 360° dengan mulus seperti di galeri -->
+        <a-camera position="0 1.6 0" look-controls="pointerLockEnabled: true" wasd-controls="enabled: false">
+            <!-- Cursor dengan fuse untuk interaksi menatap (gaze) 2 detik -->
+            <a-cursor color="#c8102e" raycaster="objects: .clickable" fuse="true" fuse-timeout="2000"
+                animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 2000; from: 1 1 1; to: 0.1 0.1 0.1"
+                animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1"></a-cursor>
+        </a-camera>
+
+        <!-- Skybox 360 Derajat -->
+        <a-sky id="panorama-sky" src="#anfield-panorama" rotation="0 -90 0"></a-sky>
+
+        <!-- Tombol Kembali ke Galeri (Bisa ditatap 2 detik) - Desain Bulat -->
+        <a-entity position="0 0.5 -3">
+            <a-circle class="clickable" panorama-teleport-back radius="0.3" color="#c8102e" material="opacity: 0.8; transparent: true"></a-circle>
+            <a-ring class="clickable" panorama-teleport-back radius-inner="0.3" radius-outer="0.35" color="#d4af37"></a-ring>
+            <a-text value="EXIT" position="0 0 0.01" align="center" color="#ffffff" width="3" shader="msdf" font="aileronsemibold"></a-text>
+        </a-entity>
+
+    </a-scene>
+</body>
+
+</html>

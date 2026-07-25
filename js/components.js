@@ -1132,3 +1132,120 @@ AFRAME.registerComponent('liverpool-locker', {
 </svg>`;
     }
 });
+
+// KOMPONEN UNTUK POPUP WEBAR & AR CARD INTERAKTIF
+AFRAME.registerComponent('webar-info', {
+    init: function () {
+        let el = this.el;
+
+        // Inisialisasi event handler close popup WebAR sekali saja
+        if (!window.hasWebARPopupInitialized) {
+            window.hasWebARPopupInitialized = true;
+
+            const webarPopup = document.querySelector('#webar-details-popup');
+            if (webarPopup) {
+                const closeBtn = webarPopup.querySelector('.close-btn');
+                const closePopup = () => {
+                    webarPopup.classList.add('hidden');
+                    const canvas = document.querySelector('a-scene')?.canvas;
+                    if (canvas) {
+                        try {
+                            canvas.requestPointerLock();
+                        } catch (e) {
+                            console.warn('Pointer lock failed on WebAR popup close:', e);
+                        }
+                    }
+                };
+
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        closePopup();
+                    });
+                }
+
+                // Tutup via ESC key
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !webarPopup.classList.contains('hidden')) {
+                        closePopup();
+                    }
+                });
+            }
+        }
+
+        // Buka popup ketika diklik atau ditatap 2 detik (gaze cursor)
+        el.addEventListener('click', function () {
+            const webarPopup = document.querySelector('#webar-details-popup');
+            if (webarPopup) {
+                // Exit pointer lock saat popup muncul
+                if (document.pointerLockElement) {
+                    document.exitPointerLock();
+                }
+                webarPopup.classList.remove('hidden');
+            }
+        });
+    }
+});
+
+// ==============================================
+// 9. LOGIKA TELEPORTASI PANORAMA 360 ANFIELD
+// ==============================================
+
+// Variabel global untuk menyimpan posisi & rotasi galeri sebelum teleportasi
+let previousPlayerPosition = null;
+let previousPlayerRotation = null;
+
+AFRAME.registerComponent('panorama-teleport', {
+    init: function () {
+        this.el.addEventListener('click', () => {
+            // Berpindah ke file HTML scene baru
+            window.location.href = 'panorama.html';
+        });
+    }
+});
+
+AFRAME.registerComponent('panorama-teleport-back', {
+    init: function () {
+        this.el.addEventListener('click', () => {
+            // Kembali ke galeri utama
+            window.location.href = 'index.html';
+        });
+    }
+});
+
+// ==============================================
+// 10. LOGIKA SPATIAL VIDEO (Putar & Bersuara saat dekat)
+// ==============================================
+AFRAME.registerComponent('spatial-video', {
+    schema: {
+        videoEl: { type: 'selector' },
+        distance: { type: 'number', default: 3.5 }
+    },
+    tick: function () {
+        if (!this.data.videoEl) return;
+        
+        let camera = document.querySelector('a-camera');
+        if (!camera) return;
+        
+        // Hitung jarak dari pemain ke layar video
+        let cameraPos = camera.object3D.position;
+        let screenPos = new THREE.Vector3();
+        this.el.object3D.getWorldPosition(screenPos);
+        
+        let dist = cameraPos.distanceTo(screenPos);
+        
+        // Jika pemain dalam radius jarak, putar video dan hidupkan suara (unmute)
+        if (dist < this.data.distance) {
+            if (this.data.videoEl.paused) {
+                this.data.videoEl.play().catch(e => console.warn('Browser auto-play prevented:', e));
+            }
+            this.data.videoEl.muted = false;
+        } else {
+            // Jika pemain menjauh, pause video dan mute
+            if (!this.data.videoEl.paused) {
+                this.data.videoEl.pause();
+            }
+            this.data.videoEl.muted = true;
+        }
+    }
+});

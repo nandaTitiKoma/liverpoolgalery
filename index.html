@@ -36,23 +36,60 @@
             <p>Klik layar atau tombol di bawah untuk masuk ke mode navigasi kamera.</p>
 
             <div class="controls-guide">
-                <div class="control-item">
-                    <span class="key">Geser Mouse</span>
-                    <span class="desc">Arahkan Kamera (Bebas tanpa klik)</span>
+                <!-- Kategori: Navigasi Dasar -->
+                <div style="margin-bottom: 15px;">
+                    <h3 style="color: #a5b4fc; font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Navigasi Dasar</h3>
+                    <div class="control-item">
+                        <span class="key">Geser Mouse</span>
+                        <span class="desc">Menoleh & Mengarahkan Pandangan 360° (Bebas tanpa klik)</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">W, A, S, D</span>
+                        <span class="desc">Berjalan (Maju, Kiri, Mundur, Kanan)</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">Spasi</span>
+                        <span class="desc">Melompat</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">ESC</span>
+                        <span class="desc">Keluar dari Mode Layar (Memunculkan Kursor)</span>
+                    </div>
                 </div>
-                <div class="control-item">
-                    <span class="key">W, A, S, D</span>
-                    <span class="desc">Jalan (Maju, Kiri, Mundur, Kanan)</span>
+
+                <!-- Kategori: Interaksi Objek & Pameran -->
+                <div style="margin-bottom: 15px;">
+                    <h3 style="color: #a5b4fc; font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Interaksi Pameran</h3>
+                    <div class="control-item">
+                        <span class="key">Klik Kiri</span>
+                        <span class="desc">Tatap Objek lalu Klik Kiri untuk berinteraksi cepat</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">Tatap 2 Detik</span>
+                        <span class="desc">Arahkan kursor ke objek (Poster/Piala) selama 2 detik untuk membuka Detail Informasi</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">Dekati TV</span>
+                        <span class="desc">Berjalan mendekat ke layar TV (±4,5 meter) untuk otomatis memutar Video & Suara (Spatial Audio)</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">Klik Sembarang</span>
+                        <span class="desc">Klik kiri di tempat kosong untuk menembakkan/melempar bola interaktif</span>
+                    </div>
                 </div>
-                <div class="control-item">
-                    <span class="key">Spasi</span>
-                    <span class="desc">Melompat</span>
+
+                <!-- Kategori: Fitur Spesial -->
+                <div>
+                    <h3 style="color: #a5b4fc; font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Fitur Spesial</h3>
+                    <div class="control-item">
+                        <span class="key">Scan WebAR</span>
+                        <span class="desc">Tatap poster QR Code WebAR di dinding belakang untuk panduan AR HP</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="key">Portal Anfield</span>
+                        <span class="desc">Tatap lukisan Anfield 360 (kanan belakang) untuk masuk ke dalam Stadion secara Virtual</span>
+                    </div>
                 </div>
-                <div class="control-item">
-                    <span class="key">Klik Kiri</span>
-                    <span class="desc">Lempar Bola</span>
-                </div>
-                <span class="hint">*Tekan <strong>ESC</strong> untuk menampilkan kursor kembali.</span>
             </div>
 
             <button class="start-btn">Mulai Menjelajah</button>
@@ -119,6 +156,45 @@
         </div>
     </div>
 
+    <!-- Overlay Popup WebAR Interaktif (QR Code & Marker AR Card) -->
+    <div id="webar-details-popup" class="hidden">
+        <div class="webar-popup-card">
+            <button class="close-btn">&times;</button>
+            <div class="webar-header">
+                <h2 class="webar-title">PAMERAN WEBAR & AR CARD INTERAKTIF</h2>
+                <p class="webar-subtitle">Nikmati Pengalaman Augmented Reality (AR) Langsung di Smartphone Anda!</p>
+            </div>
+            
+            <div class="webar-content-grid">
+                <!-- KARTU 1: QR CODE WEBAR -->
+                <div class="webar-item-card">
+                    <div class="webar-img-box">
+                        <img src="./assets/markers/qrcode.png" alt="WebAR QR Code">
+                    </div>
+                    <div class="webar-item-info">
+                        <span class="webar-badge">LANGKAH 1</span>
+                        <h3>Scan QR Code di HP</h3>
+                        <p>Gunakan kamera Smartphone/HP Anda untuk melacak QR Code ini. Ini akan membuka halaman browser WebAR interaktif secara cepat & instan tanpa perlu mengunduh aplikasi.</p>
+                    </div>
+                </div>
+
+                <!-- KARTU 2: MARKER AR CARD -->
+                <div class="webar-item-card">
+                    <div class="webar-img-box">
+                        <img src="./assets/markers/card.png" alt="AR Card Marker">
+                    </div>
+                    <div class="webar-item-info">
+                        <span class="webar-badge">LANGKAH 2</span>
+                        <h3>Arahkan Kamera ke Marker Card</h3>
+                        <p>Setelah halaman WebAR terbuka di HP Anda, arahkan kamera HP ke gambar AR Card ini. Objek 3D piala interaktif akan langsung muncul melayang di atas kartu scanner ini!</p>
+                    </div>
+                </div>
+            </div>
+
+            <span class="close-hint">*Tekan <strong>ESC</strong> atau tombol silang di atas untuk menutup & kembali menjelajah.</span>
+        </div>
+    </div>
+
     <!-- Real-time FPS Counter Overlay -->
     <div id="fps-counter">
         <span class="fps-dot"></span>
@@ -134,9 +210,6 @@
             <!-- Video Miracle of Anfield & Istanbul -->
             <video id="video-anfield" src="./assets/video/miracle of anfield.mp4" preload="auto" loop="true" muted playsinline></video>
             <video id="video-istanbul" src="./assets/video/miracle of instanbul.mp4" preload="auto" loop="true" muted playsinline></video>
-            <!-- Tekstur Jersey Locker Room -->
-            <img id="jersey-home-tex" src="./assets/img/liverpool_home_jersey.png">
-            <img id="jersey-gk-tex" src="./assets/img/liverpool_gk_jersey.png">
             <!-- Tekstur Tembok Bata Merah Liverpool -->
             <img id="wall-texture" src="./assets/images/wall-texture.svg">
             <!-- Gambar The Champions Wall -->
@@ -146,7 +219,7 @@
             <!-- Poster Tambahan Sekat Pintu Sisi Luar -->
             <img id="poster-pintu-kanan-belakang" src="./assets/images/anfieldpintukananbelakang.jpg">
             <img id="poster-pintu-kiri-belakang" src="./assets/images/postertembokpintukiribelakang.jpg">
-            <!-- 10 Poster Sejarah Liverpool Kustom -->
+            <!-- 14 Poster Sejarah Liverpool (Galeri Memanjang Sejajar Setingkat Mata) -->
             <img id="poster-1" src="./assets/images/poster1.jpg">
             <img id="poster-2" src="./assets/images/poster2.jpg">
             <img id="poster-3" src="./assets/images/poster3.jpg">
@@ -161,18 +234,6 @@
             <img id="poster-12" src="./assets/images/poster12.jpg">
             <img id="poster-13" src="./assets/images/poster13.jpg">
             <img id="poster-14" src="./assets/images/poster14.jpg">
-            <img id="poster-15" src="./assets/images/poster15.jpg">
-            <img id="poster-16" src="./assets/images/poster16.jpg">
-            <img id="poster-17" src="./assets/images/poster17.jpg">
-            <img id="poster-18" src="./assets/images/poster18.jpg">
-            <img id="poster-19" src="./assets/images/poster 19.jpg">
-            <img id="poster-20" src="./assets/images/poster20.jpg">
-            <img id="poster-21" src="./assets/images/poster21.jpg">
-            <img id="poster-22" src="./assets/images/poster22.jpg">
-            <img id="poster-23" src="./assets/images/poster23.jpg">
-            <img id="poster-24" src="./assets/images/poster24.jpg">
-            <img id="poster-25" src="./assets/images/poster25.jpg">
-            <img id="poster-26" src="./assets/images/poster26.jpg">
             <!-- Teks Pameran SVG (Offline & CORS-free) -->
             <img id="txt-main-title" src="./assets/images/label_main_title.svg">
             <img id="txt-istanbul" src="./assets/images/label_istanbul.svg">
@@ -208,6 +269,13 @@
             <img id="champ-2" src="./assets/images/ligachampion.jpg">
             <img id="champ-3" src="./assets/images/ligainggri2020.jpg">
             <img id="champ-4" src="./assets/images/ligainggris2025.jpg">
+
+            <!-- Marker WebAR Scanner & QR Code -->
+            <img id="ar-card-img" src="./assets/markers/card.png">
+            <img id="ar-qrcode-img" src="./assets/markers/qrcode.png">
+
+            <!-- Panorama 360 Anfield -->
+            <img id="anfield-panorama" src="./assets/images/anfield_panorama.png?v=2">
         </a-assets>
 
         <!-- Kamera Player dengan fitur WASD, Look, Jump, dan Gravitasi Lorong -->
@@ -345,179 +413,102 @@
         <a-plane class="raycast-obstacle" position="10 0.76 -20" rotation="0 -90 0" width="20" height="8" src="#wall-texture" repeat="20 8"
             roughness="0.6" shadow="receive: true"></a-plane>
 
-        <!-- ====== POSTER SEJARAH DI TEMBOK UTAMA KIRI & KANAN ====== -->
-        <!-- Posisi Z tepat di tengah celah sekat (Z = -18) -->
+        <!-- ====== GALERI POSTER MEMANJANG DI TEMBOK KIRI & KANAN (Sejajar Setingkat Mata) ====== -->
         
-        <!-- Kluster Poster Dinding Kiri (X = -9.9) -->
-        <a-entity id="left-wall-posters" position="-9.9 -1.2 -18" rotation="0 90 0">
-            <!-- Poster 1: Kiri Atas (Top-Left) -->
-            <a-entity position="-1.4 2.0 0">
-                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
-                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.0" height="1.5" src="#poster-1" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 2: Kanan Atas (Top-Right) -->
-            <a-entity position="1.4 2.0 0">
-                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
-                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.0" height="1.5" src="#poster-2" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 3: Tengah (Center) -->
-            <a-entity position="0 0.76 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-3" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 4: Kiri Bawah (Bottom-Left) -->
-            <a-entity position="-1.4 -0.48 0">
-                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
-                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.0" height="1.5" src="#poster-4" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 5: Kanan Bawah (Bottom-Right) -->
-            <a-entity position="1.4 -0.48 0">
-                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
-                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.0" height="1.5" src="#poster-5" position="0 0 0.01"></a-plane>
-            </a-entity>
-        </a-entity>
-
-        <!-- Kluster Poster Dinding Kanan (X = 9.9) -->
-        <a-entity id="right-wall-posters" position="9.9 -1.2 -18" rotation="0 -90 0">
-            <!-- Poster 6: Kiri Atas (Top-Left dari perspektif dinding kanan) -->
-            <a-entity position="-1.4 2.0 0">
-                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
-                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.0" height="1.5" src="#poster-6" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 7: Kanan Atas (Top-Right) -->
-            <a-entity position="1.4 2.0 0">
-                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
-                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.0" height="1.5" src="#poster-7" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 8: Tengah (Center) -->
-            <a-entity position="0 0.76 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-8" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 9: Kiri Bawah (Bottom-Left) -->
-            <a-entity position="-1.4 -0.48 0">
-                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
-                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.0" height="1.5" src="#poster-9" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 10: Kanan Bawah (Bottom-Right) -->
-            <a-entity position="1.4 -0.48 0">
-                <a-plane width="1.1" height="1.6" color="#d4af37"></a-plane>
-                <a-plane width="1.06" height="1.56" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.0" height="1.5" src="#poster-10" position="0 0 0.01"></a-plane>
-            </a-entity>
-        </a-entity>
-
-        <!-- Kluster Poster Dinding Kiri Tambahan (Bagian Depan: Z = -10 ke -16) -->
-        <a-entity id="left-wall-posters-front" position="-9.9 -0.7 0" rotation="0 90 0">
-            <!-- Poster 15 (Z = -11.5) -->
+        <!-- Galeri Dinding Kiri (X = -9.9) - 7 Poster Memanjang Sejajar -->
+        <a-entity id="left-wall-posters" position="-9.9 -0.4 0" rotation="0 90 0">
+            <!-- Poster 1 (Z = -11.5) -->
             <a-entity position="11.5 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-15" position="0 0 0.01"></a-plane>
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-1" position="0 0 0.01"></a-plane>
             </a-entity>
-            <!-- Poster 16 (Z = -14.5) -->
-            <a-entity position="14.5 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-16" position="0 0 0.01"></a-plane>
+            <!-- Poster 2 (Z = -14.1) -->
+            <a-entity position="14.1 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-2" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 3 (Z = -16.7) -->
+            <a-entity position="16.7 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-3" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 4 (Z = -19.3) -->
+            <a-entity position="19.3 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-4" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 5 (Z = -21.9) -->
+            <a-entity position="21.9 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-5" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 11 (Z = -24.5) -->
+            <a-entity position="24.5 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-11" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 12 (Z = -27.1) -->
+            <a-entity position="27.1 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-12" position="0 0 0.01"></a-plane>
             </a-entity>
         </a-entity>
 
-        <!-- Kluster Poster Dinding Kiri Tambahan (Bagian Belakang: Z = -20 ke -30) -->
-        <a-entity id="left-wall-posters-back" position="-9.9 -0.7 0" rotation="0 90 0">
-            <!-- Poster 17 (Z = -21.5) -->
-            <a-entity position="21.5 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-17" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 18 (Z = -23.8) -->
-            <a-entity position="23.8 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-18" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 19 (Z = -26.1) -->
-            <a-entity position="26.1 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-19" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 20 (Z = -28.4) -->
-            <a-entity position="28.4 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-20" position="0 0 0.01"></a-plane>
-            </a-entity>
-        </a-entity>
-
-        <!-- Kluster Poster Dinding Kanan Tambahan (Bagian Depan: Z = -10 ke -16) -->
-        <a-entity id="right-wall-posters-front" position="9.9 -0.7 0" rotation="0 -90 0">
-            <!-- Poster 21 (Z = -11.5) -->
+        <!-- Galeri Dinding Kanan (X = 9.9) - 7 Poster Memanjang Sejajar -->
+        <a-entity id="right-wall-posters" position="9.9 -0.4 0" rotation="0 -90 0">
+            <!-- Poster 6 (Z = -11.5) -->
             <a-entity position="-11.5 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-21" position="0 0 0.01"></a-plane>
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-6" position="0 0 0.01"></a-plane>
             </a-entity>
-            <!-- Poster 22 (Z = -14.5) -->
-            <a-entity position="-14.5 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-22" position="0 0 0.01"></a-plane>
+            <!-- Poster 7 (Z = -14.1) -->
+            <a-entity position="-14.1 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-7" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 8 (Z = -16.7) -->
+            <a-entity position="-16.7 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-8" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 9 (Z = -19.3) -->
+            <a-entity position="-19.3 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-9" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 10 (Z = -21.9) -->
+            <a-entity position="-21.9 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-10" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 13 (Z = -24.5) -->
+            <a-entity position="-24.5 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-13" position="0 0 0.01"></a-plane>
+            </a-entity>
+            <!-- Poster 14 (Z = -27.1) -->
+            <a-entity position="-27.1 0 0">
+                <a-plane width="1.3" height="1.85" color="#d4af37"></a-plane>
+                <a-plane width="1.26" height="1.81" color="#111111" position="0 0 0.005"></a-plane>
+                <a-plane width="1.2" height="1.75" src="#poster-14" position="0 0 0.01"></a-plane>
             </a-entity>
         </a-entity>
 
-        <!-- Kluster Poster Dinding Kanan Tambahan (Bagian Belakang: Z = -20 ke -30) -->
-        <a-entity id="right-wall-posters-back" position="9.9 -0.7 0" rotation="0 -90 0">
-            <!-- Poster 23 (Z = -21.5) -->
-            <a-entity position="-21.5 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-23" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 24 (Z = -23.8) -->
-            <a-entity position="-23.8 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-24" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 25 (Z = -26.1) -->
-            <a-entity position="-26.1 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-25" position="0 0 0.01"></a-plane>
-            </a-entity>
-            <!-- Poster 26 (Z = -28.4) -->
-            <a-entity position="-28.4 0 0">
-                <a-plane width="1.3" height="1.9" color="#d4af37"></a-plane>
-                <a-plane width="1.26" height="1.86" color="#111111" position="0 0 0.005"></a-plane>
-                <a-plane width="1.2" height="1.8" src="#poster-26" position="0 0 0.01"></a-plane>
-            </a-entity>
-        </a-entity>
-
-        <!-- Dinding Ujung Belakang Trophy Room (Z=-30) -->
-        <!-- Kiri: menutup kiri tengah dan sayap kiri, dari X=-10 hingga X=6 -->
-        <a-plane class="raycast-obstacle" position="-2 0.76 -30" rotation="0 0 0" width="16" height="8" src="#wall-texture" repeat="16 8"
-            roughness="0.6" shadow="receive: true"></a-plane>
-        <!-- Kanan: menutup sisa sayap kanan setelah pintu, dari X=8 hingga X=10 -->
-        <a-plane class="raycast-obstacle" position="9 0.76 -30" rotation="0 0 0" width="2" height="8" src="#wall-texture" repeat="2 8"
-            roughness="0.6" shadow="receive: true"></a-plane>
-        <!-- Kanan: menutup sayap kanan sebelum pintu, dari X=4 hingga X=6 -->
-        <a-plane class="raycast-obstacle" position="5 0.76 -30" rotation="0 0 0" width="2" height="8" src="#wall-texture" repeat="2 8"
-            roughness="0.6" shadow="receive: true"></a-plane>
-        <!-- Atas Pintu Locker Room: dari X=6 hingga X=8, di atas celah pintu (Y=-1.04 hingga Y=4.76) -->
-        <!-- Tinggi panel = 5.8, center Y = 1.86 -->
-        <a-plane class="raycast-obstacle" position="7 1.86 -30" rotation="0 0 0" width="2" height="5.8" src="#wall-texture"
-            repeat="2 5.8" roughness="0.6" shadow="receive: true"></a-plane>
+        <!-- Dinding Ujung Belakang Trophy Room (Z=-30) - Solid & Ringan -->
+        <a-plane class="raycast-obstacle" position="0 0.76 -30" rotation="0 0 0" width="20" height="8" src="#wall-texture" repeat="20 8" roughness="0.6"></a-plane>
         <!-- ====== DISPLAY MOMENT OF CHAMPIONS (Dengan Bingkai & Interaksi) ====== -->
         <a-entity position="0 0 -29.9">
 
@@ -568,6 +559,63 @@
                 <!-- Teks Putih (Menggunakan Image SVG agar 100% muncul secara offline) -->
                 <a-image src="#txt-pl2025" position="0 0 0.01" width="2.4" height="0.3" transparent="true"></a-image>
             </a-plane>
+
+            <!-- ==== PAMERAN WEBAR & SCANNER AR CARD (Sisi Kiri Tembok Belakang) ==== -->
+            <a-entity id="webar-exhibition-wall" position="-7 -0.3 0.02" rotation="0 0 0">
+                <!-- Papan Utama Emas & Hitam Matte -->
+                <a-plane width="5.0" height="3.2" color="#d4af37"></a-plane>
+                <a-plane width="4.9" height="3.1" color="#111622" position="0 0 0.005"></a-plane>
+
+                <!-- Banner Judul Merah Anfield -->
+                <a-plane position="0 1.15 0.01" width="4.5" height="0.4" color="#c8102e">
+                    <a-text value="PAMERAN WEBAR & AR CARD" position="0 0 0.01" align="center"
+                        color="#ffffff" width="4.6" wrap-count="24" shader="msdf" font="aileronsemibold"></a-text>
+                </a-plane>
+
+                <!-- Display Gambar AR Card & QR Code Bersisian -->
+                <a-entity position="0 -0.1 0.01">
+                    <a-plane width="4.5" height="1.9" color="#d4af37"></a-plane>
+                    <a-plane width="4.4" height="1.8" color="#0a0c14" position="0 0 0.005"></a-plane>
+                    
+                    <!-- Gambar AR Card Scanner (Klik / Gaze 2s untuk Buka Popup Modal HD) -->
+                    <a-image class="clickable" src="#ar-card-img" position="-1.1 0 0.01" width="1.9" height="1.6" webar-info></a-image>
+                    <!-- Gambar QR Code WebAR (Klik / Gaze 2s untuk Buka Popup Modal HD) -->
+                    <a-image class="clickable" src="#ar-qrcode-img" position="1.1 0 0.01" width="1.9" height="1.6" webar-info></a-image>
+                </a-entity>
+
+                <!-- Plakat Label Merah di Bawah Gambar -->
+                <a-plane position="0 -1.2 0.01" width="4.5" height="0.32" color="#c8102e" class="clickable" webar-info>
+                    <a-text value="*TATAP 2 DETIK / KLIK UNTUK MEMBUKA POPUP WEBAR HD" position="0 0 0.01" align="center" color="#ffffff"
+                        width="4.6" wrap-count="38" shader="msdf"></a-text>
+                </a-plane>
+            </a-entity>
+
+            <!-- ==== PANORAMA 360 ANFIELD (Sisi Kanan Tembok Belakang) ==== -->
+            <a-entity id="panorama-trigger" position="7 -0.3 0.02" rotation="0 0 0">
+                <!-- Papan Utama Emas & Hitam Matte -->
+                <a-plane width="5.0" height="3.2" color="#d4af37"></a-plane>
+                <a-plane width="4.9" height="3.1" color="#111622" position="0 0 0.005"></a-plane>
+
+                <!-- Banner Judul Merah Panorama -->
+                <a-plane position="0 1.15 0.01" width="4.5" height="0.4" color="#c8102e">
+                    <a-text value="ANFIELD 360 DEGREE PANORAMA" position="0 0 0.01" align="center"
+                        color="#ffffff" width="4.6" wrap-count="28" shader="msdf" font="aileronsemibold"></a-text>
+                </a-plane>
+
+                <!-- Display Gambar Panorama (Tatap 2s untuk masuk) -->
+                <a-entity position="0 -0.1 0.01">
+                    <a-plane width="4.5" height="1.9" color="#d4af37"></a-plane>
+                    <a-plane width="4.4" height="1.8" color="#0a0c14" position="0 0 0.005"></a-plane>
+                    
+                    <a-image class="clickable" src="#anfield-panorama" position="0 0 0.01" width="4.3" height="1.7" panorama-teleport></a-image>
+                </a-entity>
+
+                <!-- Plakat Label Merah di Bawah Gambar -->
+                <a-plane position="0 -1.2 0.01" width="4.5" height="0.32" color="#c8102e" class="clickable" panorama-teleport>
+                    <a-text value="*TATAP 2 DETIK / KLIK UNTUK MASUK KE DALAM STADION ANFIELD" position="0 0 0.01" align="center" color="#ffffff"
+                        width="4.6" wrap-count="42" shader="msdf"></a-text>
+                </a-plane>
+            </a-entity>
 
         </a-entity>
 
@@ -655,9 +703,9 @@
             <!-- Bingkai Hitam TV Matte -->
             <a-box position="-0.111 0 0" rotation="0 -90 0" width="4.8" height="2.7" depth="0.042" color="#111111"
                 shadow="cast: true; receive: true"></a-box>
-            <!-- Layar Video Interaktif -->
-            <a-video class="clickable" src="#video-istanbul" position="-0.133 0 0" rotation="0 -90 0" width="4.6" height="2.5"
-                video-screen="videoEl: #video-istanbul" shadow="cast: true"></a-video>
+            <!-- Layar Video Interaktif (Spatial Audio) -->
+            <a-video src="#video-istanbul" position="-0.133 0 0" rotation="0 -90 0" width="4.6" height="2.5"
+                spatial-video="videoEl: #video-istanbul; distance: 4.5" shadow="cast: true"></a-video>
             <!-- Judul Video Diatas Layar (Sesuai nama file) -->
             <a-text value="MIRACLE OF ISTANBUL" position="-0.133 1.7 0" rotation="0 -90 0"
                 align="center" width="6" color="#d4af37" font="aileronsemibold"
@@ -701,9 +749,9 @@
             <!-- Bingkai Hitam TV Matte -->
             <a-box position="0.111 0 0" rotation="0 90 0" width="4.8" height="2.7" depth="0.042" color="#111111"
                 shadow="cast: true; receive: true"></a-box>
-            <!-- Layar Video Interaktif -->
-            <a-video class="clickable" src="#video-anfield" position="0.133 0 0" rotation="0 90 0" width="4.6" height="2.5"
-                video-screen="videoEl: #video-anfield" shadow="cast: true"></a-video>
+            <!-- Layar Video Interaktif (Spatial Audio) -->
+            <a-video src="#video-anfield" position="0.133 0 0" rotation="0 90 0" width="4.6" height="2.5"
+                spatial-video="videoEl: #video-anfield; distance: 4.5" shadow="cast: true"></a-video>
             <!-- Judul Video Diatas Layar (Sesuai nama file) -->
             <a-text value="MIRACLE OF ANFIELD" position="0.133 1.7 0" rotation="0 90 0"
                 align="center" width="6" color="#d4af37" font="aileronsemibold"
@@ -886,153 +934,6 @@
                 material="color: #ff0000; opacity: 0; transparent: true"
                 trophy-info="modelId: trophy-club-world-cup; modelType: gltf; modelScale: 1 1 1; title: WORLD CHAMPIONS (1 Trophy); desc: Gelar juara dunia antar klub pertama dalam sejarah panjang Liverpool FC. Diraih pada Desember 2019 di Qatar setelah mengalahkan klub Brasil, Flamengo, lewat gol tunggal Roberto Firmino di babak perpanjangan waktu yang menegangkan."></a-cylinder>
         </a-entity>
-
-        <!-- ============================================== -->
-        <!-- ============================================== -->
-        <!-- ====== RUANG GANTI LIVERPOOL (LOCKER ROOM) ====== -->
-        <!-- Dimensi: 16m lebar (X: -8 hingga 8), 14m panjang (Z: -30 hingga -44) -->
-        <!-- Lantai: Y = -3.24 (sama dengan Trophy Room) -->
-        <!-- Pintu: Di sayap kanan (X=7, Z=-30), antara sekat kanan (X=4) dan tembok kanan (X=10) -->
-        <!-- ============================================== -->
-
-        <!-- ====== PINTU MASUK LOCKER ROOM (Sayap Kanan, X=7) ====== -->
-        <!-- Posisi pintu: X=7, Z=-30. Lantai Y=-3.24, door height=2.2m, center Y=-3.24+1.1=-2.14 -->
-        <!-- Frame Pintu Emas -->
-        <a-box position="6.0 -2.14 -30.0" width="0.12" height="2.3" depth="0.18" color="#d4af37" metalness="0.6" roughness="0.2" shadow="cast: true"></a-box>
-        <a-box position="8.0 -2.14 -30.0" width="0.12" height="2.3" depth="0.18" color="#d4af37" metalness="0.6" roughness="0.2" shadow="cast: true"></a-box>
-        <a-box position="7 -1.02 -30.0" width="2.15" height="0.12" depth="0.18" color="#d4af37" metalness="0.6" roughness="0.2" shadow="cast: true"></a-box>
-        <!-- Daun Pintu Otomatis (engsel di kiri X=6.06, membuka ke dalam/belakang) -->
-        <a-entity id="locker-door-main" position="6.06 -2.14 -30.08" auto-door="triggerDistance: 3">
-            <!-- Daun pintu bergerak 1.94m ke kanan dari engsel -->
-            <a-box class="raycast-obstacle" position="0.97 0 0" width="1.94" height="2.18" depth="0.06"
-                color="#c8102e" metalness="0.1" roughness="0.8" shadow="cast: true; receive: true"></a-box>
-            <!-- Gagang Pintu Emas -->
-            <a-cylinder position="1.75 0 0.05" radius="0.03" height="0.14" rotation="90 0 0"
-                color="#d4af37" metalness="0.8" roughness="0.1"></a-cylinder>
-        </a-entity>
-        <!-- Teks "LOCKER ROOM" di atas pintu, menghadap Trophy Room -->
-        <a-text value="LOCKER ROOM" position="7 -0.82 -29.8" align="center" color="#d4af37"
-            width="3" wrap-count="12" shader="msdf"></a-text>
-        <!-- Lampu sorot kecil di atas pintu agar terlihat jelas -->
-        <a-light type="point" position="7 -0.6 -29.5" intensity="0.4" distance="3" decay="1.5" color="#d4af37"></a-light>
-
-        <!-- ====== LANTAI KAYU LOCKER ROOM ====== -->
-        <!-- Lantai kayu (warna kayu oak natural) -->
-        <a-plane position="0 -3.24 -37" rotation="-90 0 0" width="16" height="14" color="#c8a96e"
-            roughness="0.85" metalness="0.0" shadow="receive: true"></a-plane>
-        <!-- Tekstur papan kayu (garis-garis horizontal) menggunakan beberapa strip sempit -->
-        <a-entity id="lr-floor-planks" position="0 -3.235 -37">
-            <a-plane rotation="-90 0 0" position="0 0 -5" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
-            <a-plane rotation="-90 0 0" position="0 0 -3.5" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
-            <a-plane rotation="-90 0 0" position="0 0 -2" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
-            <a-plane rotation="-90 0 0" position="0 0 -0.5" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
-            <a-plane rotation="-90 0 0" position="0 0 1" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
-            <a-plane rotation="-90 0 0" position="0 0 2.5" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
-            <a-plane rotation="-90 0 0" position="0 0 4" width="16" height="0.02" color="#b8956a" roughness="1"></a-plane>
-        </a-entity>
-
-        <!-- Logo Liverpool Besar di Tengah Lantai -->
-        <a-image src="#lfc-logo" position="0 -3.21 -37" rotation="-90 0 0" width="4.5" height="4.5" transparent="true" material="opacity: 0.75; shader: flat"></a-image>
-
-        <!-- ====== LANGIT-LANGIT LOCKER ROOM (Bergaris Merah-Putih) ====== -->
-        <!-- Plafon dasar putih -->
-        <a-plane position="0 0.76 -37" rotation="90 0 0" width="16" height="14" color="#f0f0f0" material="side: double" shadow="receive: true"></a-plane>
-        <!-- Strip merah horizontal (menciptakan efek slatted ceiling khas Liverpool) -->
-        <a-entity id="lr-ceiling-stripes" position="0 0.74 -37">
-            <a-box position="0 0 -6.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 -5.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 -4.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 -3.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 -2.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 -1.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 -0.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 0.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 1.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 2.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 3.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 4.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 5.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-            <a-box position="0 0 6.5" width="16" height="0.06" depth="0.25" color="#c8102e" roughness="0.7"></a-box>
-        </a-entity>
-
-        <!-- ====== DINDING LOCKER ROOM ====== -->
-        <!-- Dinding Kiri (X = -8) - Merah dengan panel putih -->
-        <a-plane class="raycast-obstacle" position="-8 -1.24 -37" rotation="0 90 0" width="14" height="4.0" color="#c8102e" roughness="0.6" shadow="receive: true"></a-plane>
-        <!-- Panel putih dinding kiri (menjadi latar loker) -->
-        <a-plane position="-7.95 -0.74 -37" rotation="0 90 0" width="13" height="2.5" color="#f5f5f5" roughness="0.4"></a-plane>
-
-        <!-- Dinding Kanan (X = 8) - Merah dengan panel putih -->
-        <a-plane class="raycast-obstacle" position="8 -1.24 -37" rotation="0 -90 0" width="14" height="4.0" color="#c8102e" roughness="0.6" shadow="receive: true"></a-plane>
-        <!-- Panel putih dinding kanan -->
-        <a-plane position="7.95 -0.74 -37" rotation="0 -90 0" width="13" height="2.5" color="#f5f5f5" roughness="0.4"></a-plane>
-
-        <!-- Dinding Belakang (Z = -44) - Merah + Teks YNWA -->
-        <a-plane class="raycast-obstacle" position="0 -1.24 -44" rotation="0 0 0" width="16" height="4.0" color="#c8102e" roughness="0.6" shadow="receive: true"></a-plane>
-        <!-- Panel putih dinding belakang (latar loker) -->
-        <a-plane position="0 -0.74 -43.95" rotation="0 0 0" width="15" height="2.5" color="#f5f5f5" roughness="0.4"></a-plane>
-        <!-- Teks "YOU'LL NEVER WALK ALONE" di atas panel dinding belakang -->
-        <a-text value="YOU'LL NEVER WALK ALONE" position="0 0.55 -43.9" align="center" color="#d4af37" width="10" wrap-count="25" shader="msdf"></a-text>
-
-        <!-- Dinding Depan (Z = -30, menghadap dalam ruang ganti agar tidak terlihat transparan dari dalam) -->
-        <!-- Bagian Kiri dari pintu (X=-8 hingga X=6) -->
-        <a-plane class="raycast-obstacle" position="-1 -1.24 -30" rotation="0 180 0" width="14" height="4.0" color="#c8102e" roughness="0.6" shadow="receive: true"></a-plane>
-        <!-- Bagian Atas pintu (Menutup celah atas sampai langit-langit agar teks tidak terlihat) -->
-        <a-plane class="raycast-obstacle" position="7 -0.145 -30" rotation="0 180 0" width="2" height="1.81" color="#c8102e" roughness="0.6" shadow="receive: true"></a-plane>
-
-        <!-- ====== 24 LOKER PEMAIN ====== -->
-
-        <!-- DINDING KIRI (X = -8, Rotasi = 0 90 0) - Kiper & Bek (8 Loker) -->
-        <!-- Disusun dari Z = -31 hingga Z = -41.5 dengan jarak ~1.5m -->
-        <a-entity liverpool-locker="playerName: A.BECKER; playerNumber: 1; isGK: true" position="-7.95 -3.24 -31.5" rotation="0 90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: ADRIAN; playerNumber: 13; isGK: true" position="-7.95 -3.24 -33.0" rotation="0 90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: ROBERTSON; playerNumber: 26" position="-7.95 -3.24 -34.5" rotation="0 90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: VIRGIL; playerNumber: 4" position="-7.95 -3.24 -36.0" rotation="0 90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: MATIP; playerNumber: 32" position="-7.95 -3.24 -37.5" rotation="0 90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: GOMEZ; playerNumber: 12" position="-7.95 -3.24 -39.0" rotation="0 90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: LOVREN; playerNumber: 6" position="-7.95 -3.24 -40.5" rotation="0 90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: TRENT; playerNumber: 66" position="-7.95 -3.24 -42.0" rotation="0 90 0"></a-entity>
-
-        <!-- DINDING BELAKANG (Z = -44, Rotasi = 0 0 0) - Gelandang (8 Loker) -->
-        <!-- Disusun dari X = -5.25 hingga X = 5.25 -->
-        <a-entity liverpool-locker="playerName: FABINHO; playerNumber: 3" position="-5.25 -3.24 -43.9" rotation="0 0 0"></a-entity>
-        <a-entity liverpool-locker="playerName: WIJNALDUM; playerNumber: 5" position="-3.75 -3.24 -43.9" rotation="0 0 0"></a-entity>
-        <a-entity liverpool-locker="playerName: HENDERSON; playerNumber: 14" position="-2.25 -3.24 -43.9" rotation="0 0 0"></a-entity>
-        <a-entity liverpool-locker="playerName: MILNER; playerNumber: 7" position="-0.75 -3.24 -43.9" rotation="0 0 0"></a-entity>
-        <a-entity liverpool-locker="playerName: KEITA; playerNumber: 8" position="0.75 -3.24 -43.9" rotation="0 0 0"></a-entity>
-        <a-entity liverpool-locker="playerName: O.-CHAMBERLAIN; playerNumber: 15" position="2.25 -3.24 -43.9" rotation="0 0 0"></a-entity>
-        <a-entity liverpool-locker="playerName: LALLANA; playerNumber: 20" position="3.75 -3.24 -43.9" rotation="0 0 0"></a-entity>
-        <a-entity liverpool-locker="playerName: SHAQIRI; playerNumber: 23" position="5.25 -3.24 -43.9" rotation="0 0 0"></a-entity>
-
-        <!-- DINDING KANAN (X = 8, Rotasi = 0 -90 0) - Penyerang & Pemain Muda (8 Loker) -->
-        <a-entity liverpool-locker="playerName: MANE; playerNumber: 10" position="7.95 -3.24 -42.0" rotation="0 -90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: FIRMINO; playerNumber: 9" position="7.95 -3.24 -40.5" rotation="0 -90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: SALAH; playerNumber: 11" position="7.95 -3.24 -39.0" rotation="0 -90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: ORIGI; playerNumber: 27" position="7.95 -3.24 -37.5" rotation="0 -90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: MINAMINO; playerNumber: 18" position="7.95 -3.24 -36.0" rotation="0 -90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: ELLIOTT; playerNumber: 67" position="7.95 -3.24 -34.5" rotation="0 -90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: WILLIAMS; playerNumber: 76" position="7.95 -3.24 -33.0" rotation="0 -90 0"></a-entity>
-        <a-entity liverpool-locker="playerName: KELLEHER; playerNumber: 62; isGK: true" position="7.95 -3.24 -31.5" rotation="0 -90 0"></a-entity>
-
-        <!-- ====== PENCAHAYAAN LOCKER ROOM (Dikurangi agar tidak silau) ====== -->
-        <!-- Lampu Neon Langit-langit (Visual saja) -->
-        <a-box position="-3 0.72 -33" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
-        <a-box position="3 0.72 -33" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
-        <a-box position="-3 0.72 -37" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
-        <a-box position="3 0.72 -37" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
-        <a-box position="-3 0.72 -41" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
-        <a-box position="3 0.72 -41" width="3" height="0.05" depth="0.12" color="#eeeeee" material="emissive: #ffffff; emissiveIntensity: 0.6"></a-box>
-
-        <!-- Pencahayaan Utama Ruang Ganti (Dioptimalkan menjadi 1 Point Light + 1 Ambient untuk menghemat FPS) -->
-        <a-light type="ambient" color="#fffbe6" intensity="0.15"></a-light>
-        <a-light type="point" position="0 0.5 -37" intensity="0.25" distance="18" decay="1.2" color="#fffbe6"></a-light>
-        <!-- Sorot loker (dikurangi intensitas) -->
-        <a-light type="spot" position="-6 0.3 -36.5" target="#left-wall-target" intensity="0.25" distance="7" angle="45" color="#fffbe6" shadow="cast: false"></a-light>
-        <a-entity id="left-wall-target" position="-7.9 -1.5 -36.5"></a-entity>
-        <a-light type="spot" position="6 0.3 -36.5" target="#right-wall-target" intensity="0.25" distance="7" angle="45" color="#fffbe6" shadow="cast: false"></a-light>
-        <a-entity id="right-wall-target" position="7.9 -1.5 -36.5"></a-entity>
-        <a-light type="spot" position="0 0.3 -42" target="#back-wall-target" intensity="0.3" distance="5" angle="40" color="#fffbe6" shadow="cast: false"></a-light>
-        <a-entity id="back-wall-target" position="0 -1.5 -43.9"></a-entity>
-        <!-- Ambient TIDAK ditambahkan ulang di sini (sudah ada ambient global di Trophy Room) -->
 
     </a-scene>
 </body>

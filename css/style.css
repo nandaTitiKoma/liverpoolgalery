@@ -195,6 +195,24 @@ body, html {
     margin-bottom: 32px;
     text-align: left;
     border: 1px solid rgba(255, 255, 255, 0.03);
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+/* Custom Scrollbar for Controls Guide */
+.controls-guide::-webkit-scrollbar {
+    width: 6px;
+}
+.controls-guide::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+.controls-guide::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.5);
+    border-radius: 10px;
+}
+.controls-guide::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.8);
 }
 
 .control-item {
@@ -514,4 +532,156 @@ body, html {
 .fps-label {
     color: #9ca3af;
 }
+
+/* Styling Overlay Popup WebAR Interaktif */
+#webar-details-popup {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(11, 15, 25, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+#webar-details-popup.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.webar-popup-card {
+    position: relative;
+    background: rgba(16, 22, 36, 0.97);
+    border: 2px solid rgba(212, 175, 55, 0.5);
+    border-radius: 24px;
+    padding: 32px 28px 24px 28px;
+    max-width: 680px;
+    width: 92%;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8),
+                0 0 40px rgba(212, 175, 55, 0.25);
+    color: #f3f4f6;
+    max-height: 88vh;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.webar-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.webar-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #ffffff 0%, #d4af37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+}
+
+.webar-subtitle {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
+/* Tata Letak Vertikal 1 Kolom (Main Scroll dari Langkah 1 ke Langkah 2) */
+.webar-content-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 24px;
+}
+
+.webar-item-card {
+    width: 100%;
+    background: rgba(10, 12, 20, 0.7);
+    border: 2px solid rgba(212, 175, 55, 0.35);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.webar-item-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(212, 175, 55, 0.7);
+    box-shadow: 0 12px 32px rgba(212, 175, 55, 0.2);
+}
+
+/* Box Gambar Penuh Sangat Besar (440px x 440px) untuk Kemudahan Scan Kamera HP */
+.webar-img-box {
+    width: 440px;
+    height: 440px;
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #ffffff; /* Background putih kontras tinggi untuk pemindaian scanner */
+    border: 4px solid #d4af37;
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px auto;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.webar-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+.webar-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #c8102e 0%, #990011 100%);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
+}
+
+.webar-item-info h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.webar-item-info p {
+    font-size: 14px;
+    color: #cbd5e1;
+    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+@media (max-width: 520px) {
+    .webar-img-box {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+
+
 
